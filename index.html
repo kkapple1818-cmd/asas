@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여객 육상운송용역 적격심사 계산기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #1976D2;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #1976D2;
+            font-weight: bold;
+        }
+
+        .reset-button {
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .reset-button:hover {
+            background-color: #F57C00;
+        }
+
+        .reset-button:active {
+            background-color: #E65100;
+        }
+
+        .section-title {
+            background-color: #F5F5F5;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            font-weight: bold;
+            font-size: 16px;
+            border-left: 4px solid #1976D2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+
+        td:first-child {
+            width: 40%;
+            font-weight: 500;
+        }
+
+        .input-cell {
+            background-color: #FFF9E6;
+        }
+
+        .calc-cell {
+            background-color: #E3F2FD;
+            font-weight: bold;
+        }
+
+        .subtotal-cell {
+            background-color: #E8F5E9;
+            font-weight: bold;
+        }
+
+        .final-cell {
+            background-color: #C8E6C9;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .limit-cell {
+            background-color: #F2F2F2;
+            color: #666;
+            text-align: center;
+        }
+
+        .failed-cell {
+            background-color: #FFEBEE;
+            color: #D32F2F;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #1976D2;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #1976D2;
+        }
+
+        .formula-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #F5F5F5;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .formula-section strong {
+            color: #1976D2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            .reset-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            td {
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+
+        @media print {
+            .reset-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1>여객 육상운송용역 적격심사 계산기 (5억원 미만)</h1>
+            <button class="reset-button" onclick="resetCalculator()">🔄 초기화</button>
+        </div>
+
+        <div class="section-title">I. 해당용역 수행능력</div>
+        <table>
+            <tr>
+                <td>1. 이행실적 (점)</td>
+                <td class="input-cell">
+                    <input type="number" id="perf1" value="10" step="1" min="0" max="10" oninput="calculate()">
+                </td>
+                <td class="limit-cell">배점한도: 10점</td>
+            </tr>
+            <tr>
+                <td>2. 경영상태 (점)</td>
+                <td class="input-cell">
+                    <input type="number" id="perf2" value="10" step="1" min="0" max="10" oninput="calculate()">
+                </td>
+                <td class="limit-cell">배점한도: 10점</td>
+            </tr>
+            <tr>
+                <td>3. 안전성정도 (점)</td>
+                <td class="input-cell">
+                    <input type="number" id="perf3" value="10" step="1" min="0" max="10" oninput="calculate()">
+                </td>
+                <td class="limit-cell">배점한도: 10점</td>
+            </tr>
+            <tr>
+                <td>4. 신인도 (점)</td>
+                <td class="input-cell">
+                    <input type="number" id="perf4" value="0" step="1" min="-5" max="4.25" oninput="calculate()">
+                </td>
+                <td class="limit-cell">+4.25~-5.0점</td>
+            </tr>
+            <tr>
+                <td>소계</td>
+                <td class="calc-cell" colspan="2">
+                    <span id="subtotal1">30.00</span> 점 (배점한도: 30점)
+                </td>
+            </tr>
+        </table>
+
+        <div class="section-title">II. 입찰가격 정보</div>
+        <table>
+            <tr>
+                <td>예정가격 (원)</td>
+                <td class="input-cell" colspan="2">
+                    <input type="number" id="estimatedPrice" value="142460025" min="0" oninput="calculate()">
+                </td>
+            </tr>
+            <tr>
+                <td>입찰가격 (원)</td>
+                <td class="input-cell" colspan="2">
+                    <input type="number" id="bidPrice" value="125388000" min="0" oninput="calculate()">
+                </td>
+            </tr>
+            <tr>
+                <td>입찰가격/예정가격 비율</td>
+                <td class="calc-cell" colspan="2">
+                    <span id="ratio">0.8802</span> (<span id="ratioPercent">88.02</span>%)
+                </td>
+            </tr>
+            <tr>
+                <td>입찰가격 점수 계산</td>
+                <td class="calc-cell" colspan="2" id="bidScoreCell">
+                    <span id="bidScore">58.08</span> <span id="bidScoreUnit">점</span>
+                </td>
+            </tr>
+            <tr>
+                <td>입찰가격 배점한도</td>
+                <td class="limit-cell" colspan="2">70점</td>
+            </tr>
+        </table>
+
+        <div class="section-title">III. 결격사유 확인</div>
+        <table>
+            <tr>
+                <td>부도/파산/해산 등</td>
+                <td class="input-cell">
+                    <select id="disq1" onchange="calculate()">
+                        <option value="0" selected>해당없음</option>
+                        <option value="-20">해당</option>
+                    </select>
+                </td>
+                <td class="calc-cell"><span id="disq1Score">0</span> 점</td>
+            </tr>
+            <tr>
+                <td>조달청 계약심사협의회 결격</td>
+                <td class="input-cell">
+                    <select id="disq2" onchange="calculate()">
+                        <option value="0" selected>해당없음</option>
+                        <option value="-20">해당</option>
+                    </select>
+                </td>
+                <td class="calc-cell"><span id="disq2Score">0</span> 점</td>
+            </tr>
+            <tr>
+                <td>차량요건 미충족</td>
+                <td class="input-cell">
+                    <select id="disq3" onchange="calculate()">
+                        <option value="0" selected>해당없음</option>
+                        <option value="-20">해당</option>
+                    </select>
+                </td>
+                <td class="calc-cell"><span id="disq3Score">0</span> 점</td>
+            </tr>
+            <tr>
+                <td>결격사유 감점 합계</td>
+                <td class="calc-cell" colspan="2"><span id="totalDeduction">0</span> 점</td>
+            </tr>
+        </table>
+
+        <div class="section-title">최종 점수</div>
+        <table>
+            <tr>
+                <td>해당용역 수행능력 점수</td>
+                <td class="subtotal-cell" colspan="2"><span id="perfTotal">30.00</span> 점</td>
+            </tr>
+            <tr>
+                <td>입찰가격 점수</td>
+                <td class="subtotal-cell" colspan="2">
+                    <span id="bidTotal">58.08</span> <span id="bidTotalUnit">점</span>
+                </td>
+            </tr>
+            <tr>
+                <td>합계</td>
+                <td class="subtotal-cell" colspan="2"><span id="totalBeforeDeduction">88.08</span> 점</td>
+            </tr>
+            <tr>
+                <td style="font-size: 18px;">최종 적격심사 점수</td>
+                <td class="final-cell" colspan="2"><span id="finalScore">88.08</span> 점</td>
+            </tr>
+        </table>
+
+        <div class="formula-section">
+            <strong>📋 계산 공식:</strong><br>
+            • 입찰가격 점수 = 배점한도(70) - 4 × |(0.91 - 입찰가격/예정가격) × 100|<br>
+            • 입찰가격이 예정가격의 94% 이상인 경우: 94% 기준으로 계산 (58점)<br>
+            • <strong style="color: #D32F2F;">입찰가격이 예정가격의 87.995% 미만인 경우: 하한선미달 (0점)</strong><br>
+            • 입찰가격/예정가격 비율은 소수점 다섯째 자리에서 반올림<br>
+            • 최저 평점: 2점
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Get performance scores
+            const perf1 = parseFloat(document.getElementById('perf1').value) || 0;
+            const perf2 = parseFloat(document.getElementById('perf2').value) || 0;
+            const perf3 = parseFloat(document.getElementById('perf3').value) || 0;
+            const perf4 = parseFloat(document.getElementById('perf4').value) || 0;
+
+            // Calculate performance subtotal
+            const perfSubtotal = perf1 + perf2 + perf3 + perf4;
+            document.getElementById('subtotal1').textContent = perfSubtotal.toFixed(2);
+            document.getElementById('perfTotal').textContent = perfSubtotal.toFixed(2);
+
+            // Get price values
+            const estimatedPrice = parseFloat(document.getElementById('estimatedPrice').value) || 0;
+            const bidPrice = parseFloat(document.getElementById('bidPrice').value) || 0;
+
+            let bidScore = 0;
+            let bidScoreDisplay = '';
+            let isFailed = false;
+
+            if (estimatedPrice > 0 && bidPrice > 0) {
+                // Calculate ratio and round to 4 decimal places (5th decimal rounding)
+                const ratio = Math.round((bidPrice / estimatedPrice) * 10000) / 10000;
+                const ratioPercent = (ratio * 100).toFixed(2);
+
+                document.getElementById('ratio').textContent = ratio.toFixed(4);
+                document.getElementById('ratioPercent').textContent = ratioPercent;
+
+                // Check if bid price exceeds estimated price
+                if (bidPrice > estimatedPrice) {
+                    bidScore = 0;
+                    bidScoreDisplay = '0.00';
+                }
+                // Check for minimum threshold (하한선미달)
+                else if (ratio < 0.87995) {
+                    bidScore = 0;
+                    bidScoreDisplay = '하한선미달';
+                    isFailed = true;
+                }
+                // Check for 94% threshold
+                else if (ratio >= 0.94) {
+                    bidScore = 70 - 4 * Math.abs((0.91 - 0.94) * 100);
+                    bidScoreDisplay = bidScore.toFixed(2);
+                }
+                // Normal calculation
+                else {
+                    bidScore = 70 - 4 * Math.abs((0.91 - ratio) * 100);
+                    bidScore = Math.max(2, bidScore); // Minimum 2 points
+                    bidScoreDisplay = bidScore.toFixed(2);
+                }
+            } else {
+                document.getElementById('ratio').textContent = '0.0000';
+                document.getElementById('ratioPercent').textContent = '0.00';
+                bidScoreDisplay = '0.00';
+            }
+
+            // Update bid score display
+            const bidScoreCell = document.getElementById('bidScoreCell');
+            if (isFailed) {
+                bidScoreCell.className = 'failed-cell';
+                document.getElementById('bidScore').textContent = bidScoreDisplay;
+                document.getElementById('bidScoreUnit').textContent = '';
+            } else {
+                bidScoreCell.className = 'calc-cell';
+                document.getElementById('bidScore').textContent = bidScoreDisplay;
+                document.getElementById('bidScoreUnit').textContent = '점';
+            }
+
+            document.getElementById('bidTotal').textContent = isFailed ? bidScoreDisplay : bidScore.toFixed(2);
+            document.getElementById('bidTotalUnit').textContent = isFailed ? '' : '점';
+
+            // Get disqualification scores
+            const disq1 = parseFloat(document.getElementById('disq1').value) || 0;
+            const disq2 = parseFloat(document.getElementById('disq2').value) || 0;
+            const disq3 = parseFloat(document.getElementById('disq3').value) || 0;
+
+            document.getElementById('disq1Score').textContent = disq1.toFixed(0);
+            document.getElementById('disq2Score').textContent = disq2.toFixed(0);
+            document.getElementById('disq3Score').textContent = disq3.toFixed(0);
+
+            const totalDeduction = disq1 + disq2 + disq3;
+            document.getElementById('totalDeduction').textContent = totalDeduction.toFixed(0);
+
+            // Calculate totals
+            const totalBeforeDeduction = perfSubtotal + bidScore;
+            const finalScore = totalBeforeDeduction + totalDeduction;
+
+            document.getElementById('totalBeforeDeduction').textContent = totalBeforeDeduction.toFixed(2);
+            document.getElementById('finalScore').textContent = finalScore.toFixed(2);
+        }
+
+        function resetCalculator() {
+            if (confirm('모든 입력값을 초기화하시겠습니까?')) {
+                // Reset performance scores
+                document.getElementById('perf1').value = 0;
+                document.getElementById('perf2').value = 0;
+                document.getElementById('perf3').value = 0;
+                document.getElementById('perf4').value = 0;
+
+                // Reset prices
+                document.getElementById('estimatedPrice').value = '';
+                document.getElementById('bidPrice').value = '';
+
+                // Reset disqualifications
+                document.getElementById('disq1').value = '0';
+                document.getElementById('disq2').value = '0';
+                document.getElementById('disq3').value = '0';
+
+                // Recalculate
+                calculate();
+            }
+        }
+
+        // Initial calculation on page load
+        calculate();
+    </script>
+</body>
+</html>

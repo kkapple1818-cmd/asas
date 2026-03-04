@@ -98,8 +98,6 @@
         .modal-delete-btn { background: #dc3545; }
         .modal-delete-btn:hover { background: #c82333; }
         .modal-empty { padding: 30px; text-align: center; color: #999; font-size: 14px; }
-
-        /* 클라우드 버튼 */
         .cloud-section { margin-top: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px; border: 1px solid #ddd; }
         .cloud-section h3 { font-size: 16px; color: #2c3e50; margin-bottom: 12px; }
         .cloud-btn { padding: 14px 28px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
@@ -108,8 +106,6 @@
         .cloud-save-btn:disabled { background: #95a5a6; cursor: not-allowed; }
         .cloud-load-btn { background: #8e44ad; color: white; }
         .cloud-load-btn:hover { background: #7d3c98; }
-
-        /* 불러오기 모달 */
         .load-modal-content { background: white; border-radius: 12px; padding: 30px; width: 90%; max-width: 650px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .load-date-input { padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 15px; margin-right: 8px; }
         .load-search-btn { padding: 10px 20px; background: #1976D2; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
@@ -120,14 +116,21 @@
         .load-time { font-size: 13px; color: #888; }
         .load-select-btn { padding: 8px 18px; background: #1976D2; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
         .load-select-btn:hover { background: #1565C0; }
-
-        /* 읽기전용 모드 */
         .readonly-banner { background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 14px; text-align: center; margin: 15px 0; font-weight: 700; color: #856404; font-size: 15px; }
         .readonly-mode .mulpum-table input,
         .readonly-mode .mulpum-table select { pointer-events: none; opacity: 0.7; background: #f5f5f5; }
         .readonly-mode .mulpum-announcement-input { pointer-events: none; opacity: 0.7; background: #f5f5f5; }
         .exit-readonly-btn { margin-top: 8px; padding: 8px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600; }
-
+        .company-buttons { margin: 25px 0; }
+        .cb-group { margin-bottom: 18px; }
+        .cb-group-label { font-weight: 700; font-size: 15px; margin-bottom: 6px; padding: 4px 12px; border-radius: 4px; display: inline-block; color: #fff; }
+        .cb-group-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .company-btn { padding: 8px 14px; border: 2px solid #ccc; border-radius: 6px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+        .company-btn:hover { background: #e3f2fd; border-color: #1976D2; }
+        .company-btn.active { background: #1976D2; color: white; border-color: #1976D2; }
+        .company-btn.has-data { border-color: #28a745; background: #e8f5e9; }
+        .company-btn.has-data.active { background: #1976D2; color: white; border-color: #1976D2; }
+        .cb-result { margin-top: 12px; padding: 16px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd; font-size: 14px; min-height: 40px; }
         @media (max-width: 768px) {
             .container { padding: 15px; }
             h1 { font-size: 18px; }
@@ -142,58 +145,35 @@
 </head>
 <body>
     <div id="copyToast" class="copy-toast"></div>
-
-    <!-- 상호관리 모달 -->
     <div id="companyModal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>상호 관리</h2>
-                <button class="modal-close" onclick="closeCompanyModal()">&times;</button>
-            </div>
+            <div class="modal-header"><h2>상호 관리</h2><button class="modal-close" onclick="closeCompanyModal()">&times;</button></div>
             <div class="modal-add-section">
                 <input type="text" id="newCompanyName" placeholder="상호명">
                 <input type="text" id="newCompanyBizno" placeholder="사업자등록번호" oninput="formatBiznoInput(this)">
                 <button class="modal-add-btn" onclick="addCompany()">+ 추가</button>
             </div>
             <div class="modal-list">
-                <div class="modal-list-header">
-                    <span>상호명</span>
-                    <span>사업자등록번호</span>
-                    <span>수정/삭제</span>
-                </div>
+                <div class="modal-list-header"><span>상호명</span><span>사업자등록번호</span><span>수정/삭제</span></div>
                 <div id="companyListContainer"></div>
             </div>
         </div>
     </div>
-
-    <!-- 불러오기 모달 -->
     <div id="loadModal" class="modal-overlay">
         <div class="load-modal-content">
-            <div class="modal-header">
-                <h2>📥 저장된 데이터 불러오기</h2>
-                <button class="modal-close" onclick="closeLoadModal()">&times;</button>
-            </div>
-            <div style="margin-bottom:12px;">
-                <input type="date" id="loadDateInput" class="load-date-input">
-                <button class="load-search-btn" onclick="fetchList()">검색</button>
-            </div>
+            <div class="modal-header"><h2>📥 저장된 데이터 불러오기</h2><button class="modal-close" onclick="closeLoadModal()">&times;</button></div>
+            <div style="margin-bottom:12px;"><input type="date" id="loadDateInput" class="load-date-input"><button class="load-search-btn" onclick="fetchList()">검색</button></div>
             <div id="loadListStatus" style="font-size:14px;color:#888;margin:8px 0;"></div>
             <div class="load-list" id="loadList"></div>
         </div>
     </div>
-
     <div class="tabs">
         <button class="tab-button active" onclick="switchTab('eligibility')">적격심사</button>
         <button class="tab-button" onclick="switchTab('mulpum')">물품투찰</button>
     </div>
-
-    <!-- 적격심사 탭 (원본 그대로) -->
     <div id="eligibility-tab" class="tab-content active">
         <div class="container">
-            <div class="header-section">
-                <h1>여객 육상운송용역 적격심사 계산기 (5억원 미만)</h1>
-                <button class="reset-button" onclick="resetCalculator()">🔄 초기화</button>
-            </div>
+            <div class="header-section"><h1>여객 육상운송용역 적격심사 계산기 (5억원 미만)</h1><button class="reset-button" onclick="resetCalculator()">🔄 초기화</button></div>
             <div class="section-title">I. 해당용역 수행능력</div>
             <table><tbody>
                 <tr><td>1. 이행실적 (점)</td><td class="input-cell"><input type="number" id="perf1" value="10" step="1" min="0" max="10" oninput="calculate()"></td><td class="limit-cell">배점한도: 10점</td></tr>
@@ -222,562 +202,173 @@
                 <tr><td>해당용역 수행능력 점수</td><td class="subtotal-cell" colspan="2"><span id="perfTotal">30.00</span> 점</td></tr>
                 <tr><td>입찰가격 점수</td><td class="subtotal-cell" colspan="2"><span id="bidTotal">58.08</span> <span id="bidTotalUnit">점</span></td></tr>
                 <tr><td>합계</td><td class="subtotal-cell" colspan="2"><span id="totalBeforeDeduction">88.08</span> 점</td></tr>
-                <tr><td style="font-size: 18px;">최종 적격심사 점수</td><td class="final-cell" colspan="2"><span id="finalScore">88.08</span> 점</td></tr>
+                <tr><td style="font-size:18px;">최종 적격심사 점수</td><td class="final-cell" colspan="2"><span id="finalScore">88.08</span> 점</td></tr>
             </tbody></table>
             <div class="formula-section">
                 <strong>📋 계산 공식:</strong><br>
                 • 입찰가격 점수 = 배점한도(70) - 4 × |(0.91 - 입찰가격/예정가격) × 100|<br>
                 • 입찰가격이 예정가격의 94% 이상인 경우: 94% 기준으로 계산 (58점)<br>
-                • <strong style="color: #D32F2F;">입찰가격이 예정가격의 87.995% 미만인 경우: 하한선미달 (0점)</strong><br>
+                • <strong style="color:#D32F2F;">입찰가격이 예정가격의 87.995% 미만인 경우: 하한선미달 (0점)</strong><br>
                 • 입찰가격/예정가격 비율은 소수점 다섯째 자리에서 반올림<br>
                 • 최저 평점: 2점
             </div>
         </div>
     </div>
-
-    <!-- 물품투찰 탭 -->
     <div id="mulpum-tab" class="tab-content">
         <div class="container" id="mulpumContainer">
-            <div class="header-section">
-                <h1>물품투찰 계산</h1>
-                <div>
-                    <button class="mulpum-manage-btn" onclick="openCompanyModal()">📋 상호 관리</button>
-                    <button class="cloud-btn cloud-load-btn" onclick="openLoadModal()">📥 불러오기</button>
-                </div>
-            </div>
-
-            <div id="readonlyBanner" class="readonly-banner" style="display:none;">
-                📌 불러온 데이터입니다 (읽기전용) — 투찰금액을 클릭하면 복사됩니다
-                <br><button class="exit-readonly-btn" onclick="exitReadonly()">편집모드로 돌아가기</button>
-            </div>
-
+            <div class="header-section"><h1>물품투찰 계산</h1><div><button class="mulpum-manage-btn" onclick="openCompanyModal()">📋 상호 관리</button><button class="cloud-btn cloud-load-btn" onclick="openLoadModal()">📥 불러오기</button></div></div>
+            <div id="readonlyBanner" class="readonly-banner" style="display:none;">📌 불러온 데이터입니다 (읽기전용) — 투찰금액을 클릭하면 복사됩니다<br><button class="exit-readonly-btn" onclick="exitReadonly()">편집모드로 돌아가기</button></div>
+            <div id="companyButtonsArea" class="company-buttons"></div>
+            <div id="cbResult" class="cb-result" style="display:none;"></div>
             <div class="mulpum-announcement-label">공고번호:</div>
-            <input type="text" id="mulpumAnnouncement" class="mulpum-announcement-input" value="" oninput="mulpumUpdatePreview(); mulpumSave();">
+            <input type="text" id="mulpumAnnouncement" class="mulpum-announcement-input" value="" oninput="mulpumUpdatePreview();mulpumSave();">
             <div id="announcementPreview" class="mulpum-announcement-preview"></div>
-            <div class="mulpum-font-control">
-                <label>글자크기 조정:</label>
-                <input type="range" id="mulpumFontSlider" min="30" max="80" value="56" oninput="mulpumAdjustFont(this.value)">
-                <span id="mulpumFontDisplay">56px</span>
-            </div>
+            <div class="mulpum-font-control"><label>글자크기 조정:</label><input type="range" id="mulpumFontSlider" min="30" max="80" value="56" oninput="mulpumAdjustFont(this.value)"><span id="mulpumFontDisplay">56px</span></div>
             <div class="section-title">기초금액확인</div>
             <table class="mulpum-table">
-                <thead><tr>
-                    <th style="width: 12%;">상호</th>
-                    <th style="width: 16%;">사업자번호</th>
-                    <th style="width: 14%;">투찰율 (%)</th>
-                    <th style="width: 18%;">기초금액 (원)</th>
-                    <th style="width: 30%;">투찰금액 (원)</th>
-                    <th style="width: 10%;">완료</th>
-                </tr></thead>
+                <thead><tr><th style="width:12%;">상호</th><th style="width:16%;">사업자번호</th><th style="width:14%;">투찰율 (%)</th><th style="width:18%;">기초금액 (원)</th><th style="width:30%;">투찰금액 (원)</th><th style="width:10%;">완료</th></tr></thead>
                 <tbody>
-                    <tr><td><select id="mulpumCompany1" onchange="mulpumOnCompanySelect(1)" tabindex="1"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno1" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate1" value="" tabindex="14" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td><input type="text" id="mulpumBaseAmount" value="" tabindex="27" oninput="mulpumFormatBase(this)" style="text-align: right;"></td><td id="mulpumBidAmount1" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck1" onchange="mulpumToggleCheck(this, 1)"></td></tr>
-                    <tr><td><select id="mulpumCompany2" onchange="mulpumOnCompanySelect(2)" tabindex="2"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno2" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate2" value="" tabindex="15" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto2">0</span></td><td id="mulpumBidAmount2" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck2" onchange="mulpumToggleCheck(this, 2)"></td></tr>
-                    <tr><td><select id="mulpumCompany3" onchange="mulpumOnCompanySelect(3)" tabindex="3"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno3" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate3" value="" tabindex="16" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto3">0</span></td><td id="mulpumBidAmount3" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck3" onchange="mulpumToggleCheck(this, 3)"></td></tr>
-                    <tr><td><select id="mulpumCompany4" onchange="mulpumOnCompanySelect(4)" tabindex="4"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno4" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate4" value="" tabindex="17" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto4">0</span></td><td id="mulpumBidAmount4" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck4" onchange="mulpumToggleCheck(this, 4)"></td></tr>
-                    <tr><td><select id="mulpumCompany5" onchange="mulpumOnCompanySelect(5)" tabindex="5"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno5" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate5" value="" tabindex="18" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto5">0</span></td><td id="mulpumBidAmount5" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck5" onchange="mulpumToggleCheck(this, 5)"></td></tr>
-                    <tr><td><select id="mulpumCompany6" onchange="mulpumOnCompanySelect(6)" tabindex="6"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno6" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate6" value="" tabindex="19" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto6">0</span></td><td id="mulpumBidAmount6" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck6" onchange="mulpumToggleCheck(this, 6)"></td></tr>
-                    <tr><td><select id="mulpumCompany7" onchange="mulpumOnCompanySelect(7)" tabindex="7"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno7" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate7" value="" tabindex="20" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto7">0</span></td><td id="mulpumBidAmount7" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck7" onchange="mulpumToggleCheck(this, 7)"></td></tr>
-                    <tr><td><select id="mulpumCompany8" onchange="mulpumOnCompanySelect(8)" tabindex="8"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno8" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate8" value="" tabindex="21" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto8">0</span></td><td id="mulpumBidAmount8" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck8" onchange="mulpumToggleCheck(this, 8)"></td></tr>
-                    <tr><td><select id="mulpumCompany9" onchange="mulpumOnCompanySelect(9)" tabindex="9"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno9" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate9" value="" tabindex="22" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto9">0</span></td><td id="mulpumBidAmount9" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck9" onchange="mulpumToggleCheck(this, 9)"></td></tr>
-                    <tr><td><select id="mulpumCompany10" onchange="mulpumOnCompanySelect(10)" tabindex="10"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno10" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate10" value="" tabindex="23" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto10">0</span></td><td id="mulpumBidAmount10" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck10" onchange="mulpumToggleCheck(this, 10)"></td></tr>
-                    <tr><td><select id="mulpumCompany11" onchange="mulpumOnCompanySelect(11)" tabindex="11"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno11" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate11" value="" tabindex="24" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto11">0</span></td><td id="mulpumBidAmount11" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck11" onchange="mulpumToggleCheck(this, 11)"></td></tr>
-                    <tr><td><select id="mulpumCompany12" onchange="mulpumOnCompanySelect(12)" tabindex="12"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno12" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate12" value="" tabindex="25" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto12">0</span></td><td id="mulpumBidAmount12" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck12" onchange="mulpumToggleCheck(this, 12)"></td></tr>
-                    <tr><td><select id="mulpumCompany13" onchange="mulpumOnCompanySelect(13)" tabindex="13"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno13" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate13" value="" tabindex="26" oninput="mulpumUpdateCalc()" style="text-align: right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto13">0</span></td><td id="mulpumBidAmount13" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck13" onchange="mulpumToggleCheck(this, 13)"></td></tr>
+                    <tr><td><select id="mulpumCompany1" onchange="mulpumOnCompanySelect(1)" tabindex="1"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno1" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate1" value="" tabindex="14" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td><input type="text" id="mulpumBaseAmount" value="" tabindex="27" oninput="mulpumFormatBase(this)" style="text-align:right;"></td><td id="mulpumBidAmount1" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck1" onchange="mulpumToggleCheck(this,1)"></td></tr>
+                    <tr><td><select id="mulpumCompany2" onchange="mulpumOnCompanySelect(2)" tabindex="2"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno2" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate2" value="" tabindex="15" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto2">0</span></td><td id="mulpumBidAmount2" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck2" onchange="mulpumToggleCheck(this,2)"></td></tr>
+                    <tr><td><select id="mulpumCompany3" onchange="mulpumOnCompanySelect(3)" tabindex="3"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno3" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate3" value="" tabindex="16" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto3">0</span></td><td id="mulpumBidAmount3" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck3" onchange="mulpumToggleCheck(this,3)"></td></tr>
+                    <tr><td><select id="mulpumCompany4" onchange="mulpumOnCompanySelect(4)" tabindex="4"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno4" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate4" value="" tabindex="17" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto4">0</span></td><td id="mulpumBidAmount4" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck4" onchange="mulpumToggleCheck(this,4)"></td></tr>
+                    <tr><td><select id="mulpumCompany5" onchange="mulpumOnCompanySelect(5)" tabindex="5"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno5" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate5" value="" tabindex="18" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto5">0</span></td><td id="mulpumBidAmount5" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck5" onchange="mulpumToggleCheck(this,5)"></td></tr>
+                    <tr><td><select id="mulpumCompany6" onchange="mulpumOnCompanySelect(6)" tabindex="6"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno6" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate6" value="" tabindex="19" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto6">0</span></td><td id="mulpumBidAmount6" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck6" onchange="mulpumToggleCheck(this,6)"></td></tr>
+                    <tr><td><select id="mulpumCompany7" onchange="mulpumOnCompanySelect(7)" tabindex="7"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno7" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate7" value="" tabindex="20" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto7">0</span></td><td id="mulpumBidAmount7" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck7" onchange="mulpumToggleCheck(this,7)"></td></tr>
+                    <tr><td><select id="mulpumCompany8" onchange="mulpumOnCompanySelect(8)" tabindex="8"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno8" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate8" value="" tabindex="21" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto8">0</span></td><td id="mulpumBidAmount8" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck8" onchange="mulpumToggleCheck(this,8)"></td></tr>
+                    <tr><td><select id="mulpumCompany9" onchange="mulpumOnCompanySelect(9)" tabindex="9"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno9" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate9" value="" tabindex="22" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto9">0</span></td><td id="mulpumBidAmount9" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck9" onchange="mulpumToggleCheck(this,9)"></td></tr>
+                    <tr><td><select id="mulpumCompany10" onchange="mulpumOnCompanySelect(10)" tabindex="10"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno10" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate10" value="" tabindex="23" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto10">0</span></td><td id="mulpumBidAmount10" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck10" onchange="mulpumToggleCheck(this,10)"></td></tr>
+                    <tr><td><select id="mulpumCompany11" onchange="mulpumOnCompanySelect(11)" tabindex="11"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno11" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate11" value="" tabindex="24" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto11">0</span></td><td id="mulpumBidAmount11" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck11" onchange="mulpumToggleCheck(this,11)"></td></tr>
+                    <tr><td><select id="mulpumCompany12" onchange="mulpumOnCompanySelect(12)" tabindex="12"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno12" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate12" value="" tabindex="25" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto12">0</span></td><td id="mulpumBidAmount12" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck12" onchange="mulpumToggleCheck(this,12)"></td></tr>
+                    <tr><td><select id="mulpumCompany13" onchange="mulpumOnCompanySelect(13)" tabindex="13"><option value="">선택</option><option value="__direct__">직접입력</option></select></td><td id="mulpumBizno13" class="mulpum-bizno-cell"></td><td><input type="text" id="mulpumRate13" value="" tabindex="26" oninput="mulpumUpdateCalc()" style="text-align:right;"></td><td class="mulpum-base-auto"><span id="mulpumBaseAuto13">0</span></td><td id="mulpumBidAmount13" class="mulpum-bid-amount" onclick="mulpumCopyBid(this)">0</td><td class="mulpum-checkbox-cell"><input type="checkbox" id="mulpumCheck13" onchange="mulpumToggleCheck(this,13)"></td></tr>
                 </tbody>
             </table>
-
-            <!-- 클라우드 저장/초기화 -->
-            <div class="cloud-section">
-                <h3>💾 데이터 관리</h3>
-                <button class="cloud-btn cloud-save-btn" id="cloudSaveBtn" onclick="cloudSave()">☁️ 클라우드 저장</button>
-                <button class="cloud-btn mulpum-reset-btn" style="background:#dc3545;color:white;" onclick="mulpumReset()">🔄 데이터 초기화</button>
-                <span id="mulpumSaveStatus" class="mulpum-save-status"></span>
-            </div>
+            <div class="cloud-section"><h3>💾 데이터 관리</h3><button class="cloud-btn cloud-save-btn" id="cloudSaveBtn" onclick="cloudSave()">☁️ 클라우드 저장</button><button class="cloud-btn mulpum-reset-btn" style="background:#dc3545;color:white;" onclick="mulpumReset()">🔄 데이터 초기화</button><span id="mulpumSaveStatus" class="mulpum-save-status"></span></div>
         </div>
     </div>
-    <!-- 적격심사 스크립트 (원본 그대로) -->
     <script>
-        function switchTab(tabName) {
-            var tabs = document.querySelectorAll('.tab-content');
-            var buttons = document.querySelectorAll('.tab-button');
-            tabs.forEach(function(tab) { tab.classList.remove('active'); });
-            buttons.forEach(function(btn) { btn.classList.remove('active'); });
-            if (tabName === 'eligibility') { document.getElementById('eligibility-tab').classList.add('active'); buttons[0].classList.add('active'); }
-            else if (tabName === 'mulpum') { document.getElementById('mulpum-tab').classList.add('active'); buttons[1].classList.add('active'); }
-        }
-        function formatWithCommas(value) { var numbers = value.replace(/[^\d]/g, ''); return numbers.replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-        function parseNumber(value) { return parseInt(value.replace(/,/g, ''), 10) || 0; }
-        function handlePriceInput(inputElement) {
-            var cursorPosition = inputElement.selectionStart; var oldValue = inputElement.value; var oldLength = oldValue.length;
-            var newValue = formatWithCommas(oldValue); inputElement.value = newValue;
-            var newLength = newValue.length; var diff = newLength - oldLength;
-            inputElement.setSelectionRange(cursorPosition + diff, cursorPosition + diff); calculate();
-        }
-        function calculate() {
-            var perf1 = parseFloat(document.getElementById('perf1').value) || 0;
-            var perf2 = parseFloat(document.getElementById('perf2').value) || 0;
-            var perf3 = parseFloat(document.getElementById('perf3').value) || 0;
-            var perf4 = parseFloat(document.getElementById('perf4').value) || 0;
-            var perfSubtotal = perf1 + perf2 + perf3 + perf4;
-            document.getElementById('subtotal1').textContent = perfSubtotal.toFixed(2);
-            document.getElementById('perfTotal').textContent = perfSubtotal.toFixed(2);
-            var estimatedPrice = parseNumber(document.getElementById('estimatedPrice').value);
-            var bidPrice = parseNumber(document.getElementById('bidPrice').value);
-            var bidScore = 0; var bidScoreDisplay = ''; var isFailed = false;
-            if (estimatedPrice > 0 && bidPrice > 0) {
-                var ratio = Math.round((bidPrice / estimatedPrice) * 10000) / 10000;
-                var ratioPercent = (ratio * 100).toFixed(2);
-                document.getElementById('ratio').textContent = ratio.toFixed(4);
-                document.getElementById('ratioPercent').textContent = ratioPercent;
-                if (bidPrice > estimatedPrice) { bidScore = 0; bidScoreDisplay = '0.00'; }
-                else if (ratio < 0.87995) { bidScore = 0; bidScoreDisplay = '하한선미달'; isFailed = true; }
-                else if (ratio >= 0.94) { bidScore = 70 - 4 * Math.abs((0.91 - 0.94) * 100); bidScoreDisplay = bidScore.toFixed(2); }
-                else { bidScore = 70 - 4 * Math.abs((0.91 - ratio) * 100); bidScore = Math.max(2, bidScore); bidScoreDisplay = bidScore.toFixed(2); }
-            } else { document.getElementById('ratio').textContent = '0.0000'; document.getElementById('ratioPercent').textContent = '0.00'; bidScoreDisplay = '0.00'; }
-            var bidScoreCell = document.getElementById('bidScoreCell');
-            if (isFailed) { bidScoreCell.className = 'failed-cell'; document.getElementById('bidScore').textContent = bidScoreDisplay; document.getElementById('bidScoreUnit').textContent = ''; }
-            else { bidScoreCell.className = 'calc-cell'; document.getElementById('bidScore').textContent = bidScoreDisplay; document.getElementById('bidScoreUnit').textContent = '점'; }
-            document.getElementById('bidTotal').textContent = isFailed ? bidScoreDisplay : bidScore.toFixed(2);
-            document.getElementById('bidTotalUnit').textContent = isFailed ? '' : '점';
-            var disq1 = parseFloat(document.getElementById('disq1').value) || 0;
-            var disq2 = parseFloat(document.getElementById('disq2').value) || 0;
-            var disq3 = parseFloat(document.getElementById('disq3').value) || 0;
-            document.getElementById('disq1Score').textContent = disq1.toFixed(0);
-            document.getElementById('disq2Score').textContent = disq2.toFixed(0);
-            document.getElementById('disq3Score').textContent = disq3.toFixed(0);
-            var totalDeduction = disq1 + disq2 + disq3;
-            document.getElementById('totalDeduction').textContent = totalDeduction.toFixed(0);
-            var totalBeforeDeduction = perfSubtotal + bidScore;
-            var finalScore = totalBeforeDeduction + totalDeduction;
-            document.getElementById('totalBeforeDeduction').textContent = totalBeforeDeduction.toFixed(2);
-            document.getElementById('finalScore').textContent = finalScore.toFixed(2);
-        }
-        function resetCalculator() {
-            if (confirm('모든 입력값을 초기화하시겠습니까?')) {
-                document.getElementById('perf1').value = 0; document.getElementById('perf2').value = 0;
-                document.getElementById('perf3').value = 0; document.getElementById('perf4').value = 0;
-                document.getElementById('estimatedPrice').value = ''; document.getElementById('bidPrice').value = '';
-                document.getElementById('disq1').value = '0'; document.getElementById('disq2').value = '0'; document.getElementById('disq3').value = '0';
-                calculate();
-            }
-        }
-        calculate();
+    function switchTab(t){document.querySelectorAll('.tab-button').forEach(function(b,i){b.classList.toggle('active',i===(t==='eligibility'?0:1));});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});document.getElementById(t+'-tab').classList.add('active');if(t==='mulpum'){buildCB();}}
+    function formatWithCommas(v){return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+    function parseNumber(v){return parseInt((v+'').replace(/[^0-9.-]/g,''))||0;}
+    function handlePriceInput(el){var n=parseNumber(el.value);el.value=n?formatWithCommas(n):'';calculate();}
+    function calculate(){
+        var p1=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf1').value)||0));
+        var p2=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf2').value)||0));
+        var p3=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf3').value)||0));
+        var p4=Math.min(4.25,Math.max(-5,parseFloat(document.getElementById('perf4').value)||0));
+        var sub=Math.min(30,p1+p2+p3+p4);document.getElementById('subtotal1').textContent=sub.toFixed(2);
+        var ep=parseNumber(document.getElementById('estimatedPrice').value);var bp=parseNumber(document.getElementById('bidPrice').value);
+        var ratio=0,bidScore=0,ratioDisplay='0.0000',pctDisplay='0.00';
+        if(ep>0&&bp>0){ratio=bp/ep;ratio=Math.round(ratio*10000)/10000;ratioDisplay=ratio.toFixed(4);pctDisplay=(ratio*100).toFixed(2);if(ratio<0.87995){bidScore=0;}else{var r2=ratio;if(r2>=0.94)r2=0.94;bidScore=70-4*Math.abs((0.91-r2)*100);bidScore=Math.round(bidScore*100)/100;if(bidScore<2)bidScore=2;}}
+        document.getElementById('ratio').textContent=ratioDisplay;document.getElementById('ratioPercent').textContent=pctDisplay;
+        var bsc=document.getElementById('bidScoreCell');
+        if(ep>0&&bp>0&&ratio<0.87995){bsc.className='failed-cell';document.getElementById('bidScore').textContent='하한선미달';document.getElementById('bidScoreUnit').textContent='(0점)';bidScore=0;}else{bsc.className='calc-cell';document.getElementById('bidScore').textContent=bidScore.toFixed(2);document.getElementById('bidScoreUnit').textContent='점';}
+        var d1=parseFloat(document.getElementById('disq1').value)||0;var d2=parseFloat(document.getElementById('disq2').value)||0;var d3=parseFloat(document.getElementById('disq3').value)||0;
+        document.getElementById('disq1Score').textContent=d1;document.getElementById('disq2Score').textContent=d2;document.getElementById('disq3Score').textContent=d3;
+        var td=d1+d2+d3;document.getElementById('totalDeduction').textContent=td;document.getElementById('perfTotal').textContent=sub.toFixed(2);
+        if(ep>0&&bp>0&&ratio<0.87995){document.getElementById('bidTotal').textContent='하한선미달';document.getElementById('bidTotalUnit').textContent='(0점)';}else{document.getElementById('bidTotal').textContent=bidScore.toFixed(2);document.getElementById('bidTotalUnit').textContent='점';}
+        var total=sub+bidScore+td;document.getElementById('totalBeforeDeduction').textContent=(sub+bidScore).toFixed(2);document.getElementById('finalScore').textContent=Math.max(0,total).toFixed(2);
+    }
+    function resetCalculator(){document.getElementById('perf1').value=10;document.getElementById('perf2').value=10;document.getElementById('perf3').value=10;document.getElementById('perf4').value=0;document.getElementById('estimatedPrice').value='';document.getElementById('bidPrice').value='';document.getElementById('disq1').value='0';document.getElementById('disq2').value='0';document.getElementById('disq3').value='0';calculate();}
+    calculate();
     </script>
-
-    <!-- 물품투찰 스크립트 (원본 + 클라우드 기능 추가) -->
     <script>
-        var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_i3qeKvsWDqfnK1pGcpgCSbC06PW44Mt6qqfHsND0nFopPuJmjV6B09UGwXUkhTXsRg/exec';
+    var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbw_i3qeKvsWDqfnK1pGcpgCSbC06PW44Mt6qqfHsND0nFopPuJmjV6B09UGwXUkhTXsRg/exec';
+    var TR=13,SK='mulpum_data_v8',CK='mulpum_companies_v1',FP='R26BK013';
+    var isRO=false,allDay=[];
 
-        (function() {
-            'use strict';
-            var TOTAL_ROWS = 13;
-            var STORAGE_KEY = 'mulpum_data_v8';
-            var COMPANY_KEY = 'mulpum_companies_v1';
-            var FIXED_PREFIX = 'R26BK013';
-            var isReadonly = false;
+    var COMPANY_GROUPS=[
+        {label:'법인계열',color:'#1976D2',members:['(주)동아투어','(주)투어동아','(주)무지개여행사','(주)서아여행사 대구','(주)서아여행사 순천','(주)새동아투어','(주)서아관광 광주','(주)서아투어 광주','(주)새동아투어 광주']},
+        {label:'늘빛',color:'#388E3C',members:['늘빛 대구','늘빛 광주','늘빛 순천','늘빛 창원','늘빛 진주']},
+        {label:'새빛',color:'#F57C00',members:['새빛 대구','새빛 강원','새빛 경기','새빛 충남','새빛 충북','새빛 전북']},
+        {label:'비둘기',color:'#7B1FA2',members:['비둘기 대구','비둘기 광주','비둘기 순천','비둘기 창원','비둘기 진주']},
+        {label:'동그라미',color:'#C62828',members:['동그라미 대구','동그라미 강원','동그라미 경기','동그라미 충남','동그라미 충북','동그라미 전북']},
+        {label:'기타',color:'#607D8B',members:['대구 규리산업','대구 경애산업']}
+    ];
 
-            function formatNum(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-            function parseNum(s) { return parseFloat(s.toString().replace(/,/g, '')) || 0; }
-            function getEl(id) { return document.getElementById(id); }
+    function fmtN(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+    function pN(v){return parseInt((v+'').replace(/[^0-9.-]/g,''))||0;}
+    function formatBiznoInput(el){var v=el.value.replace(/[^0-9]/g,'');if(v.length>10)v=v.slice(0,10);if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);else if(v.length>3)v=v.slice(0,3)+'-'+v.slice(3);el.value=v;}
+    function toast(msg){var t=document.getElementById('copyToast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},2000);}
 
-            function formatBizno(num) {
-                var digits = (num || '').toString().replace(/[^0-9]/g, '');
-                if (digits.length <= 3) return digits;
-                if (digits.length <= 5) return digits.substring(0,3) + '-' + digits.substring(3);
-                return digits.substring(0,3) + '-' + digits.substring(3,5) + '-' + digits.substring(5,10);
-            }
+    function gC(){try{return JSON.parse(localStorage.getItem(CK))||[];}catch(e){return[];}}
+    function sC(list){localStorage.setItem(CK,JSON.stringify(list));}
 
-            window.formatBiznoInput = function(input) {
-                var digits = input.value.replace(/[^0-9]/g, '');
-                if (digits.length > 10) digits = digits.substring(0, 10);
-                input.value = formatBizno(digits);
-            };
+    function openCompanyModal(){document.getElementById('companyModal').classList.add('active');rCL();}
+    function closeCompanyModal(){document.getElementById('companyModal').classList.remove('active');rAD();buildCB();}
+    function rCL(){
+        var c=gC(),con=document.getElementById('companyListContainer');
+        if(!c.length){con.innerHTML='<div class="modal-empty">등록된 상호가 없습니다.</div>';return;}
+        var h='';c.forEach(function(co,i){h+='<div class="modal-list-item"><span>'+co.name+'</span><span>'+(co.bizno||'-')+'</span><div class="modal-btn-group"><button class="modal-edit-btn" onclick="editCompany('+i+')">수정</button><button class="modal-delete-btn" onclick="deleteCompany('+i+')">삭제</button></div></div>';});
+        con.innerHTML=h;
+    }
+    function addCompany(){var n=document.getElementById('newCompanyName').value.trim();if(!n){alert('상호명을 입력해주세요.');return;}var b=document.getElementById('newCompanyBizno').value.trim();var c=gC();c.push({name:n,bizno:b});sC(c);document.getElementById('newCompanyName').value='';document.getElementById('newCompanyBizno').value='';rCL();rAD();buildCB();}
+    function editCompany(i){var c=gC();var nn=prompt('상호명 수정:',c[i].name);if(!nn)return;var nb=prompt('사업자번호 수정:',c[i].bizno||'');c[i].name=nn.trim();c[i].bizno=(nb||'').trim();sC(c);rCL();rAD();buildCB();}
+    function deleteCompany(i){var c=gC();if(!confirm('"'+c[i].name+'" 삭제?'))return;c.splice(i,1);sC(c);rCL();rAD();buildCB();}
 
-            function showToast(msg) {
-                var toast = getEl('copyToast');
-                if (!toast) return;
-                toast.textContent = msg; toast.style.display = 'block';
-                setTimeout(function() { toast.style.display = 'none'; }, 1500);
-            }
+    function rAD(){var c=gC();for(var i=1;i<=TR;i++){var sel=document.getElementById('mulpumCompany'+i);var cur=sel.value;sel.innerHTML='<option value="">선택</option><option value="__direct__">직접입력</option>';c.forEach(function(co){var o=document.createElement('option');o.value=co.name;o.textContent=co.name;sel.appendChild(o);});if(cur)sel.value=cur;}}
 
-            function getCompanies() { try { var saved = localStorage.getItem(COMPANY_KEY); return saved ? JSON.parse(saved) : []; } catch(e) { return []; } }
-            function saveCompanies(list) { try { localStorage.setItem(COMPANY_KEY, JSON.stringify(list)); } catch(e) {} }
+    function mulpumOnCompanySelect(r){var sel=document.getElementById('mulpumCompany'+r);var val=sel.value;if(val==='__direct__'){var nm=prompt('상호명 직접입력:');if(!nm){sel.value='';return;}var c=gC();var ex=c.find(function(x){return x.name===nm.trim();});if(!ex){var bz=prompt('사업자번호 (선택):','');c.push({name:nm.trim(),bizno:(bz||'').trim()});sC(c);rAD();}sel.value=nm.trim();}var co=gC().find(function(x){return x.name===sel.value;});document.getElementById('mulpumBizno'+r).textContent=co?co.bizno:'';mulpumSave();}
 
-            function renderCompanyList() {
-                var list = getCompanies();
-                var container = getEl('companyListContainer');
-                if (!container) return;
-                if (list.length === 0) { container.innerHTML = '<div class="modal-empty">등록된 상호가 없습니다.<br>위에서 상호를 추가해주세요.</div>'; return; }
-                var html = '';
-                for (var i = 0; i < list.length; i++) {
-                    html += '<div class="modal-list-item"><span>' + list[i].name + '</span><span>' + formatBizno(list[i].bizno) + '</span>';
-                    html += '<div class="modal-btn-group"><button class="modal-edit-btn" onclick="editCompany(' + i + ')">수정</button>';
-                    html += '<button class="modal-delete-btn" onclick="deleteCompany(' + i + ')">삭제</button></div></div>';
-                }
-                container.innerHTML = html;
-            }
+    function mulpumFormatBase(el){var n=pN(el.value);el.value=n?fmtN(n):'';mulpumUpdateCalc();}
 
-            function refreshAllDropdowns() {
-                var list = getCompanies();
-                for (var i = 1; i <= TOTAL_ROWS; i++) {
-                    var sel = getEl('mulpumCompany' + i);
-                    if (!sel) continue;
-                    var currentVal = sel.value;
-                    sel.innerHTML = '<option value="">선택</option>';
-                    for (var j = 0; j < list.length; j++) {
-                        var opt = document.createElement('option');
-                        opt.value = list[j].name; opt.textContent = list[j].name;
-                        sel.appendChild(opt);
-                    }
-                    var directOpt = document.createElement('option');
-                    directOpt.value = '__direct__'; directOpt.textContent = '직접입력';
-                    sel.appendChild(directOpt);
-                    if (currentVal) {
-                        var found = false;
-                        for (var k = 0; k < sel.options.length; k++) { if (sel.options[k].value === currentVal) { found = true; break; } }
-                        if (found) sel.value = currentVal; else sel.value = '';
-                    }
-                }
-            }
+    function mulpumUpdateCalc(){var base=pN(document.getElementById('mulpumBaseAmount').value);for(var i=1;i<=TR;i++){var rateStr=document.getElementById('mulpumRate'+i).value.replace(/,/g,'');var rate=parseFloat(rateStr)||0;var raw=Math.floor(base*rate/100);var bid=Math.floor(raw/10)*10;if(i>1){var autoEl=document.getElementById('mulpumBaseAuto'+i);if(autoEl)autoEl.textContent=fmtN(base);}document.getElementById('mulpumBidAmount'+i).textContent=fmtN(bid);}mulpumSave();}
 
-            window.openCompanyModal = function() { renderCompanyList(); getEl('companyModal').classList.add('active'); getEl('newCompanyName').value = ''; getEl('newCompanyBizno').value = ''; };
-            window.closeCompanyModal = function() { getEl('companyModal').classList.remove('active'); refreshAllDropdowns(); };
+    function mulpumCopyBid(el){var v=el.textContent.replace(/,/g,'');navigator.clipboard.writeText(v).then(function(){el.classList.add('copied');toast('✓ '+el.textContent+' 복사됨');setTimeout(function(){el.classList.remove('copied');},1500);});}
+    function mulpumToggleCheck(cb,r){cb.closest('tr').style.opacity=cb.checked?'0.4':'1';mulpumSave();}
 
-            window.addCompany = function() {
-                var name = getEl('newCompanyName').value.trim();
-                var biznoRaw = getEl('newCompanyBizno').value.replace(/[^0-9]/g, '');
-                if (!name) { alert('상호명을 입력해주세요.'); return; }
-                var list = getCompanies();
-                for (var i = 0; i < list.length; i++) { if (list[i].name === name) { alert('이미 등록된 상호입니다.'); return; } }
-                list.push({ name: name, bizno: biznoRaw });
-                list.sort(function(a, b) { return a.name.localeCompare(b.name, 'ko'); });
-                saveCompanies(list); renderCompanyList();
-                getEl('newCompanyName').value = ''; getEl('newCompanyBizno').value = '';
-                getEl('newCompanyName').focus();
-            };
+    function mulpumUpdatePreview(){var v=document.getElementById('mulpumAnnouncement').value;var pre=document.getElementById('announcementPreview');if(!v){pre.innerHTML='';return;}var parts=v.split('-');var h='';parts.forEach(function(p,i){var cls=i===0?'preview-fixed':(i===parts.length-1?'preview-product':'preview-changing');h+='<span class="preview-part '+cls+'" onclick="cpPP(this)">'+p+'</span>';if(i<parts.length-1)h+='<span style="color:#ccc;">-</span>';});pre.innerHTML=h;}
+    function cpPP(el){navigator.clipboard.writeText(el.textContent).then(function(){el.classList.add('copied');toast('✓ "'+el.textContent+'" 복사됨');setTimeout(function(){el.classList.remove('copied');},1500);});}
+    function mulpumAdjustFont(v){document.getElementById('mulpumAnnouncement').style.fontSize=v+'px';document.getElementById('mulpumFontDisplay').textContent=v+'px';}
 
-            window.editCompany = function(idx) {
-                var list = getCompanies();
-                if (idx < 0 || idx >= list.length) return;
-                var item = list[idx];
-                var newName = prompt('상호명을 수정하세요:', item.name);
-                if (newName === null) return;
-                newName = newName.trim();
-                if (!newName) { alert('상호명을 입력해주세요.'); return; }
-                for (var i = 0; i < list.length; i++) { if (i !== idx && list[i].name === newName) { alert('이미 등록된 상호입니다.'); return; } }
-                var newBizno = prompt('사업자등록번호를 수정하세요 (숫자만):', formatBizno(item.bizno));
-                if (newBizno === null) return;
-                newBizno = newBizno.replace(/[^0-9]/g, '');
-                var oldName = item.name;
-                item.name = newName; item.bizno = newBizno;
-                list.sort(function(a, b) { return a.name.localeCompare(b.name, 'ko'); });
-                saveCompanies(list); renderCompanyList();
-                for (var i = 1; i <= TOTAL_ROWS; i++) {
-                    var sel = getEl('mulpumCompany' + i); var biznoCell = getEl('mulpumBizno' + i);
-                    if (sel && sel.value === oldName) { sel.value = newName; if (biznoCell) biznoCell.textContent = formatBizno(newBizno); }
-                }
-                refreshAllDropdowns(); save();
-            };
+    function mulpumSave(){var d={announcement:document.getElementById('mulpumAnnouncement').value,base:document.getElementById('mulpumBaseAmount').value,rows:[]};for(var i=1;i<=TR;i++){d.rows.push({company:document.getElementById('mulpumCompany'+i).value,bizno:document.getElementById('mulpumBizno'+i).textContent,rate:document.getElementById('mulpumRate'+i).value,checked:document.getElementById('mulpumCheck'+i).checked});}localStorage.setItem(SK,JSON.stringify(d));}
+    function mulpumLoad(){try{var d=JSON.parse(localStorage.getItem(SK));if(!d)return;document.getElementById('mulpumAnnouncement').value=d.announcement||'';document.getElementById('mulpumBaseAmount').value=d.base||'';if(d.rows)d.rows.forEach(function(r,i){var idx=i+1;if(idx>TR)return;document.getElementById('mulpumCompany'+idx).value=r.company||'';document.getElementById('mulpumBizno'+idx).textContent=r.bizno||'';document.getElementById('mulpumRate'+idx).value=r.rate||'';document.getElementById('mulpumCheck'+idx).checked=!!r.checked;if(r.checked)document.getElementById('mulpumCheck'+idx).closest('tr').style.opacity='0.4';});mulpumUpdateCalc();mulpumUpdatePreview();}catch(e){}}
 
-            window.deleteCompany = function(idx) {
-                var list = getCompanies();
-                if (idx >= 0 && idx < list.length) {
-                    if (confirm('"' + list[idx].name + '" 을(를) 삭제하시겠습니까?')) { list.splice(idx, 1); saveCompanies(list); renderCompanyList(); }
-                }
-            };
+    function mulpumReset(){if(!confirm('모든 데이터를 초기화할까요?'))return;localStorage.removeItem(SK);document.getElementById('mulpumAnnouncement').value='';document.getElementById('mulpumBaseAmount').value='';for(var i=1;i<=TR;i++){document.getElementById('mulpumCompany'+i).value='';document.getElementById('mulpumBizno'+i).textContent='';document.getElementById('mulpumRate'+i).value='';document.getElementById('mulpumBidAmount'+i).textContent='0';document.getElementById('mulpumCheck'+i).checked=false;document.getElementById('mulpumCheck'+i).closest('tr').style.opacity='1';}document.getElementById('announcementPreview').innerHTML='';exitReadonly();buildCB();}
 
-            window.mulpumOnCompanySelect = function(row) {
-                var sel = getEl('mulpumCompany' + row); var biznoCell = getEl('mulpumBizno' + row);
-                if (!sel) return;
-                if (sel.value === '__direct__') {
-                    var customName = prompt('상호명을 입력하세요:');
-                    if (customName && customName.trim()) {
-                        var opt = document.createElement('option');
-                        opt.value = customName.trim(); opt.textContent = customName.trim();
-                        sel.insertBefore(opt, sel.querySelector('option[value="__direct__"]'));
-                        sel.value = customName.trim();
-                        if (biznoCell) biznoCell.textContent = '';
-                    } else { sel.value = ''; if (biznoCell) biznoCell.textContent = ''; }
-                } else if (sel.value) {
-                    var list = getCompanies();
-                    for (var i = 0; i < list.length; i++) {
-                        if (list[i].name === sel.value) { if (biznoCell) biznoCell.textContent = formatBizno(list[i].bizno); break; }
-                    }
-                } else { if (biznoCell) biznoCell.textContent = ''; }
-                save();
-            };
+    function cloudSave(){var btn=document.getElementById('cloudSaveBtn');var ann=document.getElementById('mulpumAnnouncement').value.trim();if(!ann){alert('공고번호를 입력해주세요.');return;}btn.disabled=true;btn.textContent='⏳ 저장 중...';var rows=[];for(var i=1;i<=TR;i++){var co=document.getElementById('mulpumCompany'+i).value;if(!co)continue;rows.push({company:co,bizno:document.getElementById('mulpumBizno'+i).textContent||'',rate:document.getElementById('mulpumRate'+i).value||'',baseAuto:(i===1?document.getElementById('mulpumBaseAmount').value:document.getElementById('mulpumBaseAuto'+i).textContent||'0'),bidAmount:document.getElementById('mulpumBidAmount'+i).textContent||'0'});}fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({announcement:ann,basePrice:document.getElementById('mulpumBaseAmount').value,rows:rows})}).then(function(){btn.disabled=false;btn.textContent='☁️ 클라우드 저장';toast('✓ 클라우드에 저장되었습니다!');setTimeout(function(){loadDay();},2000);}).catch(function(e){btn.disabled=false;btn.textContent='☁️ 클라우드 저장';alert('저장 실패: '+e);});}
 
-            window.mulpumUpdatePreview = function() {
-                var input = getEl('mulpumAnnouncement'); var preview = getEl('announcementPreview');
-                if (!input || !preview) return;
-                var val = input.value.trim();
-                if (!val) { preview.innerHTML = ''; return; }
-                var parts = val.split(/\s+/);
-                var gongo = parts[0] || ''; var product = parts.slice(1).join(' ');
-                var upper = gongo.toUpperCase(); var html = '';
+    function openLoadModal(){document.getElementById('loadModal').classList.add('active');var today=new Date().toISOString().slice(0,10);document.getElementById('loadDateInput').value=today;fetchList();}
+    function closeLoadModal(){document.getElementById('loadModal').classList.remove('active');}
+    function fetchList(){var dt=document.getElementById('loadDateInput').value;if(!dt){alert('날짜를 선택해주세요.');return;}var st=document.getElementById('loadListStatus');st.textContent='검색 중...';document.getElementById('loadList').innerHTML='';fetch(APPS_SCRIPT_URL+'?action=list&date='+dt).then(function(r){return r.json();}).then(function(data){allDay=data.items||[];st.textContent=allDay.length?allDay.length+'건 발견':'해당 날짜에 저장된 데이터가 없습니다.';var h='';allDay.forEach(function(item,idx){h+='<div class="load-list-item"><div><span class="load-ann">'+item.announcement+'</span><br><span class="load-time">'+item.time+'</span></div><button class="load-select-btn" onclick="loadItem('+idx+')">선택</button></div>';});document.getElementById('loadList').innerHTML=h;buildCB();}).catch(function(e){st.textContent='오류: '+e;});}
+    function loadDay(){var today=new Date().toISOString().slice(0,10);fetch(APPS_SCRIPT_URL+'?action=list&date='+today).then(function(r){return r.json();}).then(function(data){allDay=data.items||[];buildCB();}).catch(function(){});}
+    function loadItem(idx){var item=allDay[idx];if(!item)return;document.getElementById('mulpumAnnouncement').value=item.announcement||'';document.getElementById('mulpumBaseAmount').value=item.basePrice||'';for(var i=1;i<=TR;i++){var rd=item.rows&&item.rows[i-1];document.getElementById('mulpumCompany'+i).value=rd?rd.company:'';document.getElementById('mulpumBizno'+i).textContent=rd?rd.bizno:'';document.getElementById('mulpumRate'+i).value=rd?rd.rate:'';document.getElementById('mulpumCheck'+i).checked=false;document.getElementById('mulpumCheck'+i).closest('tr').style.opacity='1';}mulpumUpdateCalc();mulpumUpdatePreview();isRO=true;document.getElementById('mulpumContainer').classList.add('readonly-mode');document.getElementById('readonlyBanner').style.display='block';closeLoadModal();mulpumSave();buildCB();}
+    function exitReadonly(){isRO=false;document.getElementById('mulpumContainer').classList.remove('readonly-mode');document.getElementById('readonlyBanner').style.display='none';}
 
-                html += '<span class="preview-part" onclick="copyPreviewPart(this,\'' + gongo.replace(/'/g, "\\'") + '\')" title="클릭→공고번호 복사">';
-                if (upper.indexOf(FIXED_PREFIX) === 0) {
-                    html += '<span class="preview-fixed">' + gongo.substring(0, FIXED_PREFIX.length) + '</span>';
-                    html += '<span class="preview-changing">' + gongo.substring(FIXED_PREFIX.length) + '</span>';
-                } else { html += '<span>' + gongo + '</span>'; }
-                html += '</span>';
-                if (product) {
-                    html += ' <span class="preview-part" onclick="copyPreviewPart(this,\'' + product.replace(/'/g, "\\'") + '\')" title="클릭→물품번호 복사">';
-                    html += '<span class="preview-product">' + product + '</span></span>';
-                }
-                preview.innerHTML = html;
-            };
+    function buildCB(){
+        var area=document.getElementById('companyButtonsArea');if(!area)return;
+        var html='';
+        var cloudCompanies={};
+        allDay.forEach(function(item){if(item.rows)item.rows.forEach(function(r){if(r.company)cloudCompanies[r.company]=true;});});
+        COMPANY_GROUPS.forEach(function(g){
+            html+='<div class="cb-group"><span class="cb-group-label" style="background:'+g.color+'">'+g.label+'</span><div class="cb-group-btns">';
+            g.members.forEach(function(m){var hasDC=cloudCompanies[m]?'has-data':'';html+='<button class="company-btn '+hasDC+'" onclick="showCB(\''+m.replace(/'/g,"\\'")+'\')">'+m+'</button>';});
+            html+='</div></div>';
+        });
+        var allGroupMembers={};
+        COMPANY_GROUPS.forEach(function(g){g.members.forEach(function(m){allGroupMembers[m]=true;});});
+        var unreg=[];
+        gC().forEach(function(co){if(!allGroupMembers[co.name])unreg.push(co.name);});
+        Object.keys(cloudCompanies).forEach(function(cn){if(!allGroupMembers[cn]&&unreg.indexOf(cn)<0)unreg.push(cn);});
+        if(unreg.length){html+='<div class="cb-group"><span class="cb-group-label" style="background:#9E9E9E">미분류</span><div class="cb-group-btns">';unreg.forEach(function(m){var hasDC=cloudCompanies[m]?'has-data':'';html+='<button class="company-btn '+hasDC+'" onclick="showCB(\''+m.replace(/'/g,"\\'")+'\')">'+m+'</button>';});html+='</div></div>';}
+        area.innerHTML=html;
+    }
 
-            window.copyPreviewPart = function(el, text) {
-                if (!text) return;
-                navigator.clipboard.writeText(text).then(function() {
-                    el.classList.add('copied'); showToast('✓ ' + text + ' 복사됨!');
-                    setTimeout(function() { el.classList.remove('copied'); }, 1200);
-                });
-            };
+    function showCB(companyName){
+        document.querySelectorAll('.company-btn').forEach(function(b){b.classList.remove('active');});
+        document.querySelectorAll('.company-btn').forEach(function(b){if(b.textContent===companyName)b.classList.add('active');});
+        var res=document.getElementById('cbResult');res.style.display='block';
+        var found=[];
+        allDay.forEach(function(item){if(item.rows)item.rows.forEach(function(r){if(r.company===companyName){found.push({announcement:item.announcement,time:item.time,rate:r.rate,bidAmount:r.bidAmount,bizno:r.bizno,baseAuto:r.baseAuto});}});});
+        if(!found.length){res.innerHTML='<div style="text-align:center;padding:20px;"><strong style="color:#1976D2;font-size:16px;">\''+companyName+'\'</strong><br><span style="color:#888;">해당 날짜에 저장된 투찰 데이터가 없습니다.</span></div>';return;}
+        var h='<div style="margin-bottom:8px;"><strong style="color:#1976D2;font-size:16px;">\''+companyName+'\'</strong> 투찰 현황</div>';
+        h+='<table style="width:100%;border-collapse:collapse;font-size:13px;"><tr style="background:#4a90e2;color:white;"><th style="padding:8px;">공고번호</th><th style="padding:8px;">사업자번호</th><th style="padding:8px;">투찰율</th><th style="padding:8px;">투찰금액</th><th style="padding:8px;">저장시간</th></tr>';
+        found.forEach(function(f){h+='<tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">'+f.announcement+'</td><td style="padding:8px;text-align:center;">'+(f.bizno||'-')+'</td><td style="padding:8px;text-align:right;">'+(f.rate||'-')+'%</td><td style="padding:8px;text-align:right;font-weight:700;cursor:pointer;" onclick="navigator.clipboard.writeText(\''+((f.bidAmount||'0')+'').replace(/,/g,'')+'\');toast(\'✓ 복사됨\');">'+(f.bidAmount||'0')+'</td><td style="padding:8px;font-size:12px;color:#888;">'+f.time+'</td></tr>';});
+        h+='</table>';res.innerHTML=h;
+    }
 
-            function save() {
-                if (isReadonly) return;
-                var data = {
-                    announcement: getEl('mulpumAnnouncement') ? getEl('mulpumAnnouncement').value : '',
-                    fontSize: getEl('mulpumFontSlider') ? parseInt(getEl('mulpumFontSlider').value) : 56,
-                    baseAmount: getEl('mulpumBaseAmount') ? parseNum(getEl('mulpumBaseAmount').value) : 0,
-                    companies: [], biznos: [], rates: [], completed: []
-                };
-                for (var i = 1; i <= TOTAL_ROWS; i++) {
-                    var comp = getEl('mulpumCompany' + i); var bizno = getEl('mulpumBizno' + i);
-                    var rate = getEl('mulpumRate' + i); var check = getEl('mulpumCheck' + i);
-                    data.companies.push(comp ? comp.value : '');
-                    data.biznos.push(bizno ? bizno.textContent : '');
-                    data.rates.push(rate ? rate.value : '');
-                    data.completed.push(check ? check.checked : false);
-                }
-                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-            }
-
-            function load() {
-                try {
-                    refreshAllDropdowns();
-                    var saved = localStorage.getItem(STORAGE_KEY);
-                    if (!saved) return;
-                    var data = JSON.parse(saved);
-                    var ann = getEl('mulpumAnnouncement');
-                    if (ann && data.announcement !== undefined) ann.value = data.announcement;
-                    var slider = getEl('mulpumFontSlider'); var display = getEl('mulpumFontDisplay');
-                    if (slider && data.fontSize) { slider.value = data.fontSize; if (ann) ann.style.fontSize = data.fontSize + 'px'; if (display) display.textContent = data.fontSize + 'px'; }
-                    var base = getEl('mulpumBaseAmount');
-                    if (base && data.baseAmount) base.value = formatNum(data.baseAmount);
-                    for (var i = 1; i <= TOTAL_ROWS; i++) {
-                        var comp = getEl('mulpumCompany' + i); var bizno = getEl('mulpumBizno' + i);
-                        var rate = getEl('mulpumRate' + i); var check = getEl('mulpumCheck' + i);
-                        if (comp && data.companies && data.companies[i-1]) {
-                            var val = data.companies[i-1]; var found = false;
-                            for (var k = 0; k < comp.options.length; k++) { if (comp.options[k].value === val) { found = true; break; } }
-                            if (!found && val !== '' && val !== '__direct__') {
-                                var opt = document.createElement('option'); opt.value = val; opt.textContent = val;
-                                comp.insertBefore(opt, comp.querySelector('option[value="__direct__"]'));
-                            }
-                            comp.value = val;
-                        }
-                        if (bizno && data.biznos && data.biznos[i-1]) bizno.textContent = data.biznos[i-1];
-                        if (rate && data.rates && data.rates[i-1] !== undefined) rate.value = data.rates[i-1];
-                        if (check && data.completed) { check.checked = data.completed[i-1] || false; if (check.checked) applyRed(i); }
-                    }
-                    updateCalc();
-                    if (typeof window.mulpumUpdatePreview === 'function') window.mulpumUpdatePreview();
-                } catch(e) { console.log('Load error:', e); }
-            }
-
-            function updateCalc() {
-                var base = getEl('mulpumBaseAmount'); if (!base) return;
-                var baseVal = parseNum(base.value);
-                var formatted = baseVal > 0 ? formatNum(baseVal) : '0';
-                for (var i = 2; i <= TOTAL_ROWS; i++) { var auto = getEl('mulpumBaseAuto' + i); if (auto) auto.textContent = formatted; }
-                for (var i = 1; i <= TOTAL_ROWS; i++) {
-                    var rate = getEl('mulpumRate' + i); var bid = getEl('mulpumBidAmount' + i);
-                    if (rate && bid) {
-                        var r = parseFloat(rate.value) || 0;
-                        if (r > 0 && baseVal > 0) { bid.textContent = formatNum((baseVal * r / 100).toFixed(2)); }
-                        else { bid.textContent = '0'; }
-                    }
-                }
-                save();
-            }
-
-            function applyRed(i) { var bid = getEl('mulpumBidAmount' + i); if (bid) { bid.style.backgroundColor = '#ffcccc'; bid.style.color = '#cc0000'; bid.style.fontWeight = '700'; } }
-            function removeRed(i) { var bid = getEl('mulpumBidAmount' + i); if (bid) { bid.style.backgroundColor = '#f5f5f5'; bid.style.color = '#333'; bid.style.fontWeight = '600'; } }
-
-            window.mulpumCopyBid = function(el) {
-                var text = el.textContent.trim();
-                if (text === '0' || text === '') return;
-                try {
-                    navigator.clipboard.writeText(text).then(function() {
-                        el.classList.add('copied'); showToast('✓ ' + text + ' 복사됨!');
-                        setTimeout(function() { el.classList.remove('copied'); }, 1000);
-                    });
-                } catch(e) {
-                    var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
-                    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-                    el.classList.add('copied'); showToast('✓ ' + text + ' 복사됨!');
-                    setTimeout(function() { el.classList.remove('copied'); }, 1000);
-                }
-            };
-
-            window.mulpumAdjustFont = function(val) {
-                var ann = getEl('mulpumAnnouncement'); var display = getEl('mulpumFontDisplay');
-                if (ann) ann.style.fontSize = val + 'px'; if (display) display.textContent = val + 'px'; save();
-            };
-            window.mulpumFormatBase = function(input) { var val = parseNum(input.value); if (!isNaN(val) && val > 0) input.value = formatNum(val); updateCalc(); };
-            window.mulpumToggleCheck = function(checkbox, row) { if (checkbox.checked) { applyRed(row); } else { removeRed(row); } save(); };
-            window.mulpumUpdateCalc = function() { updateCalc(); };
-            window.mulpumSave = function() { save(); };
-
-            window.mulpumReset = function() {
-                if (!confirm('물품투찰 데이터를 모두 초기화하시겠습니까?')) return;
-                localStorage.removeItem(STORAGE_KEY);
-                var ann = getEl('mulpumAnnouncement'); if (ann) { ann.value = ''; ann.style.fontSize = '56px'; }
-                var preview = getEl('announcementPreview'); if (preview) preview.innerHTML = '';
-                var slider = getEl('mulpumFontSlider'); var display = getEl('mulpumFontDisplay');
-                if (slider) slider.value = 56; if (display) display.textContent = '56px';
-                var base = getEl('mulpumBaseAmount'); if (base) base.value = '';
-                for (var i = 1; i <= TOTAL_ROWS; i++) {
-                    var comp = getEl('mulpumCompany' + i); var bizno = getEl('mulpumBizno' + i);
-                    var rate = getEl('mulpumRate' + i); var check = getEl('mulpumCheck' + i); var bid = getEl('mulpumBidAmount' + i);
-                    if (comp) comp.value = ''; if (bizno) bizno.textContent = '';
-                    if (rate) rate.value = ''; if (check) check.checked = false;
-                    if (bid) bid.textContent = '0'; removeRed(i);
-                }
-                for (var i = 2; i <= TOTAL_ROWS; i++) { var auto = getEl('mulpumBaseAuto' + i); if (auto) auto.textContent = '0'; }
-                exitReadonly();
-            };
-
-            /* ========== 클라우드 저장 ========== */
-            window.cloudSave = function() {
-                var btn = getEl('cloudSaveBtn');
-                var ann = getEl('mulpumAnnouncement').value.trim();
-                if (!ann) { alert('공고번호를 입력해주세요.'); return; }
-                btn.disabled = true; btn.textContent = '⏳ 저장 중...';
-                var baseVal = parseNum(getEl('mulpumBaseAmount').value);
-                var rows = [];
-                for (var i = 1; i <= TOTAL_ROWS; i++) {
-                    var company = getEl('mulpumCompany' + i).value;
-                    if (!company) continue;
-                    rows.push({
-                        company: company,
-                        bizno: getEl('mulpumBizno' + i).textContent || '',
-                        rate: getEl('mulpumRate' + i).value || '',
-                        baseAuto: (i === 1) ? getEl('mulpumBaseAmount').value : (getEl('mulpumBaseAuto' + i).textContent || '0'),
-                        bidAmount: getEl('mulpumBidAmount' + i).textContent || '0'
-                    });
-                }
-                var payload = { announcement: ann, basePrice: getEl('mulpumBaseAmount').value, rows: rows };
-                fetch(APPS_SCRIPT_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                }).then(function() {
-                    btn.disabled = false; btn.textContent = '☁️ 클라우드 저장';
-                    showToast('✓ 클라우드에 저장되었습니다!');
-                }).catch(function(err) {
-                    btn.disabled = false; btn.textContent = '☁️ 클라우드 저장';
-                    alert('저장 실패: ' + err);
-                });
-            };
-
-            /* ========== 불러오기 ========== */
-            window.openLoadModal = function() {
-                getEl('loadModal').classList.add('active');
-                var today = new Date();
-                var yyyy = today.getFullYear(); var mm = String(today.getMonth()+1).padStart(2,'0'); var dd = String(today.getDate()).padStart(2,'0');
-                getEl('loadDateInput').value = yyyy + '-' + mm + '-' + dd;
-                fetchList();
-            };
-            window.closeLoadModal = function() { getEl('loadModal').classList.remove('active'); };
-
-            window.fetchList = function() {
-                var dateVal = getEl('loadDateInput').value;
-                var statusEl = getEl('loadListStatus'); var listEl = getEl('loadList');
-                statusEl.textContent = '검색 중...'; listEl.innerHTML = '';
-                var url = APPS_SCRIPT_URL + '?action=list&date=' + encodeURIComponent(dateVal);
-                fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-                    if (!data.list || data.list.length === 0) { statusEl.textContent = '해당 날짜에 저장된 데이터가 없습니다.'; return; }
-                    statusEl.textContent = data.list.length + '건 검색됨';
-                    data.list.forEach(function(item) {
-                        var div = document.createElement('div');
-                        div.className = 'load-list-item';
-                        div.innerHTML = '<div><span class="load-ann">' + item.announcement + '</span><br><span class="load-time">' + item.time + '</span></div>' +
-                            '<button class="load-select-btn" onclick="loadData(\'' + item.saveId + '\')">불러오기</button>';
-                        listEl.appendChild(div);
-                    });
-                }).catch(function(err) { statusEl.textContent = '검색 실패: ' + err; });
-            };
-
-            window.loadData = function(saveId) {
-                var statusEl = getEl('loadListStatus');
-                statusEl.textContent = '불러오는 중...';
-                var url = APPS_SCRIPT_URL + '?action=load&saveId=' + encodeURIComponent(saveId);
-                fetch(url).then(function(r) { return r.json(); }).then(function(data) {
-                    if (data.result !== 'ok') { statusEl.textContent = '불러오기 실패'; return; }
-                    closeLoadModal();
-                    enterReadonly();
-                    getEl('mulpumAnnouncement').value = data.announcement || '';
-                    var base = getEl('mulpumBaseAmount');
-                    if (base) base.value = data.basePrice || '';
-                    mulpumUpdatePreview();
-                    // 모든 행 초기화
-                    for (var i = 1; i <= TOTAL_ROWS; i++) {
-                        getEl('mulpumCompany' + i).value = '';
-                        getEl('mulpumBizno' + i).textContent = '';
-                        getEl('mulpumRate' + i).value = '';
-                        if (i === 1) { /* base는 이미 세팅 */ } else { getEl('mulpumBaseAuto' + i).textContent = '0'; }
-                        getEl('mulpumBidAmount' + i).textContent = '0';
-                        getEl('mulpumCheck' + i).checked = false;
-                        removeRed(i);
-                    }
-                    // 데이터 채우기
-                    if (data.rows) {
-                        data.rows.forEach(function(r, idx) {
-                            var i = idx + 1;
-                            if (i > TOTAL_ROWS) return;
-                            var sel = getEl('mulpumCompany' + i);
-                            var exists = false;
-                            for (var j = 0; j < sel.options.length; j++) { if (sel.options[j].value === r.company) { exists = true; break; } }
-                            if (!exists && r.company) {
-                                var opt = document.createElement('option');
-                                opt.value = r.company; opt.textContent = r.company;
-                                sel.insertBefore(opt, sel.querySelector('option[value="__direct__"]'));
-                            }
-                            sel.value = r.company;
-                            getEl('mulpumBizno' + i).textContent = r.bizno || '';
-                            getEl('mulpumRate' + i).value = r.rate || '';
-                            if (i >= 2) getEl('mulpumBaseAuto' + i).textContent = r.baseAuto || '0';
-                            getEl('mulpumBidAmount' + i).textContent = r.bidAmount || '0';
-                        });
-                    }
-                    var fs = getEl('mulpumFontSlider').value;
-                    getEl('mulpumAnnouncement').style.fontSize = fs + 'px';
-                    showToast('✓ 데이터를 불러왔습니다!');
-                }).catch(function(err) { statusEl.textContent = '불러오기 실패: ' + err; });
-            };
-
-            /* 읽기전용 모드 */
-            function enterReadonly() {
-                isReadonly = true;
-                getEl('mulpumContainer').classList.add('readonly-mode');
-                getEl('readonlyBanner').style.display = 'block';
-                getEl('cloudSaveBtn').style.display = 'none';
-            }
-            window.exitReadonly = function() {
-                isReadonly = false;
-                getEl('mulpumContainer').classList.remove('readonly-mode');
-                getEl('readonlyBanner').style.display = 'none';
-                getEl('cloudSaveBtn').style.display = '';
-            };
-
-            if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function() { setTimeout(load, 200); }); }
-            else { setTimeout(load, 200); }
-        })();
+    function initLoad(){rAD();mulpumLoad();buildCB();var today=new Date().toISOString().slice(0,10);fetch(APPS_SCRIPT_URL+'?action=list&date='+today).then(function(r){return r.json();}).then(function(data){allDay=data.items||[];buildCB();}).catch(function(){});}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(initLoad,200);});}else{setTimeout(initLoad,200);}
     </script>
 </body>
 </html>

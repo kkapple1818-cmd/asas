@@ -61,7 +61,6 @@
         .mulpum-bizno-cell { background: #f9f9f9; text-align: center; padding: 10px; font-size: 16px; color: #333; font-weight: 500; white-space: nowrap; }
         .mulpum-checkbox-cell { text-align: center; }
         .mulpum-checkbox-cell input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
-        .mulpum-reset-section { margin-top: 30px; text-align: center; }
         .mulpum-reset-btn { padding: 16px 32px; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 700; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         .mulpum-reset-btn:hover { background: #c82333; }
         .mulpum-save-status { margin-left: 20px; color: #28a745; font-size: 16px; font-weight: 600; }
@@ -204,14 +203,7 @@
                 <tr><td>합계</td><td class="subtotal-cell" colspan="2"><span id="totalBeforeDeduction">88.08</span> 점</td></tr>
                 <tr><td style="font-size:18px;">최종 적격심사 점수</td><td class="final-cell" colspan="2"><span id="finalScore">88.08</span> 점</td></tr>
             </tbody></table>
-            <div class="formula-section">
-                <strong>📋 계산 공식:</strong><br>
-                • 입찰가격 점수 = 배점한도(70) - 4 × |(0.91 - 입찰가격/예정가격) × 100|<br>
-                • 입찰가격이 예정가격의 94% 이상인 경우: 94% 기준으로 계산 (58점)<br>
-                • <strong style="color:#D32F2F;">입찰가격이 예정가격의 87.995% 미만인 경우: 하한선미달 (0점)</strong><br>
-                • 입찰가격/예정가격 비율은 소수점 다섯째 자리에서 반올림<br>
-                • 최저 평점: 2점
-            </div>
+            <div class="formula-section"><strong>📋 계산 공식:</strong><br>• 입찰가격 점수 = 배점한도(70) - 4 × |(0.91 - 입찰가격/예정가격) × 100|<br>• 입찰가격이 예정가격의 94% 이상인 경우: 94% 기준으로 계산 (58점)<br>• <strong style="color:#D32F2F;">입찰가격이 예정가격의 87.995% 미만인 경우: 하한선미달 (0점)</strong><br>• 입찰가격/예정가격 비율은 소수점 다섯째 자리에서 반올림<br>• 최저 평점: 2점</div>
         </div>
     </div>
     <div id="mulpum-tab" class="tab-content">
@@ -251,31 +243,28 @@
     function formatWithCommas(v){return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
     function parseNumber(v){return parseInt((v+'').replace(/[^0-9.-]/g,''))||0;}
     function handlePriceInput(el){var n=parseNumber(el.value);el.value=n?formatWithCommas(n):'';calculate();}
-    function calculate(){
-        var p1=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf1').value)||0));
-        var p2=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf2').value)||0));
-        var p3=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf3').value)||0));
-        var p4=Math.min(4.25,Math.max(-5,parseFloat(document.getElementById('perf4').value)||0));
-        var sub=Math.min(30,p1+p2+p3+p4);document.getElementById('subtotal1').textContent=sub.toFixed(2);
-        var ep=parseNumber(document.getElementById('estimatedPrice').value);var bp=parseNumber(document.getElementById('bidPrice').value);
-        var ratio=0,bidScore=0,ratioDisplay='0.0000',pctDisplay='0.00';
-        if(ep>0&&bp>0){ratio=bp/ep;ratio=Math.round(ratio*10000)/10000;ratioDisplay=ratio.toFixed(4);pctDisplay=(ratio*100).toFixed(2);if(ratio<0.87995){bidScore=0;}else{var r2=ratio;if(r2>=0.94)r2=0.94;bidScore=70-4*Math.abs((0.91-r2)*100);bidScore=Math.round(bidScore*100)/100;if(bidScore<2)bidScore=2;}}
-        document.getElementById('ratio').textContent=ratioDisplay;document.getElementById('ratioPercent').textContent=pctDisplay;
-        var bsc=document.getElementById('bidScoreCell');
-        if(ep>0&&bp>0&&ratio<0.87995){bsc.className='failed-cell';document.getElementById('bidScore').textContent='하한선미달';document.getElementById('bidScoreUnit').textContent='(0점)';bidScore=0;}else{bsc.className='calc-cell';document.getElementById('bidScore').textContent=bidScore.toFixed(2);document.getElementById('bidScoreUnit').textContent='점';}
-        var d1=parseFloat(document.getElementById('disq1').value)||0;var d2=parseFloat(document.getElementById('disq2').value)||0;var d3=parseFloat(document.getElementById('disq3').value)||0;
-        document.getElementById('disq1Score').textContent=d1;document.getElementById('disq2Score').textContent=d2;document.getElementById('disq3Score').textContent=d3;
-        var td=d1+d2+d3;document.getElementById('totalDeduction').textContent=td;document.getElementById('perfTotal').textContent=sub.toFixed(2);
-        if(ep>0&&bp>0&&ratio<0.87995){document.getElementById('bidTotal').textContent='하한선미달';document.getElementById('bidTotalUnit').textContent='(0점)';}else{document.getElementById('bidTotal').textContent=bidScore.toFixed(2);document.getElementById('bidTotalUnit').textContent='점';}
-        var total=sub+bidScore+td;document.getElementById('totalBeforeDeduction').textContent=(sub+bidScore).toFixed(2);document.getElementById('finalScore').textContent=Math.max(0,total).toFixed(2);
-    }
+    function calculate(){var p1=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf1').value)||0));var p2=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf2').value)||0));var p3=Math.min(10,Math.max(0,parseFloat(document.getElementById('perf3').value)||0));var p4=Math.min(4.25,Math.max(-5,parseFloat(document.getElementById('perf4').value)||0));var sub=Math.min(30,p1+p2+p3+p4);document.getElementById('subtotal1').textContent=sub.toFixed(2);var ep=parseNumber(document.getElementById('estimatedPrice').value);var bp=parseNumber(document.getElementById('bidPrice').value);var ratio=0,bidScore=0,ratioDisplay='0.0000',pctDisplay='0.00';if(ep>0&&bp>0){ratio=bp/ep;ratio=Math.round(ratio*10000)/10000;ratioDisplay=ratio.toFixed(4);pctDisplay=(ratio*100).toFixed(2);if(ratio<0.87995){bidScore=0;}else{var r2=ratio;if(r2>=0.94)r2=0.94;bidScore=70-4*Math.abs((0.91-r2)*100);bidScore=Math.round(bidScore*100)/100;if(bidScore<2)bidScore=2;}}document.getElementById('ratio').textContent=ratioDisplay;document.getElementById('ratioPercent').textContent=pctDisplay;var bsc=document.getElementById('bidScoreCell');if(ep>0&&bp>0&&ratio<0.87995){bsc.className='failed-cell';document.getElementById('bidScore').textContent='하한선미달';document.getElementById('bidScoreUnit').textContent='(0점)';bidScore=0;}else{bsc.className='calc-cell';document.getElementById('bidScore').textContent=bidScore.toFixed(2);document.getElementById('bidScoreUnit').textContent='점';}var d1=parseFloat(document.getElementById('disq1').value)||0;var d2=parseFloat(document.getElementById('disq2').value)||0;var d3=parseFloat(document.getElementById('disq3').value)||0;document.getElementById('disq1Score').textContent=d1;document.getElementById('disq2Score').textContent=d2;document.getElementById('disq3Score').textContent=d3;var td=d1+d2+d3;document.getElementById('totalDeduction').textContent=td;document.getElementById('perfTotal').textContent=sub.toFixed(2);if(ep>0&&bp>0&&ratio<0.87995){document.getElementById('bidTotal').textContent='하한선미달';document.getElementById('bidTotalUnit').textContent='(0점)';}else{document.getElementById('bidTotal').textContent=bidScore.toFixed(2);document.getElementById('bidTotalUnit').textContent='점';}var total=sub+bidScore+td;document.getElementById('totalBeforeDeduction').textContent=(sub+bidScore).toFixed(2);document.getElementById('finalScore').textContent=Math.max(0,total).toFixed(2);}
     function resetCalculator(){document.getElementById('perf1').value=10;document.getElementById('perf2').value=10;document.getElementById('perf3').value=10;document.getElementById('perf4').value=0;document.getElementById('estimatedPrice').value='';document.getElementById('bidPrice').value='';document.getElementById('disq1').value='0';document.getElementById('disq2').value='0';document.getElementById('disq3').value='0';calculate();}
     calculate();
     </script>
+    <!-- Firebase SDK (CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <script>
-    var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbw_i3qeKvsWDqfnK1pGcpgCSbC06PW44Mt6qqfHsND0nFopPuJmjV6B09UGwXUkhTXsRg/exec';
-    var TR=13,SK='mulpum_data_v8',CK='mulpum_companies_v1',FP='R26BK013';
-    var isRO=false,allDay=[];
+    /* ===== Firebase 초기화 ===== */
+    firebase.initializeApp({
+        apiKey: "AIzaSyBGQNmLmVTAzFb_rSs265YxsvAg6-03SLk",
+        authDomain: "kkapple-8130e.firebaseapp.com",
+        projectId: "kkapple-8130e",
+        storageBucket: "kkapple-8130e.firebasestorage.app",
+        messagingSenderId: "660615080525",
+        appId: "1:660615080525:web:deda4b2e827309220a0a04"
+    });
+    var db = firebase.firestore();
+
+    /* ===== 상수 ===== */
+    var TR=13, SK='mulpum_data_v8', CK='mulpum_companies_v1', FP='R26BK013';
+    var isRO=false, allDay=[];
 
     var COMPANY_GROUPS=[
         {label:'법인계열',color:'#1976D2',members:['(주)동아투어','(주)투어동아','(주)무지개여행사','(주)서아여행사 대구','(주)서아여행사 순천','(주)새동아투어','(주)서아관광 광주','(주)서아투어 광주','(주)새동아투어 광주']},
@@ -286,55 +275,144 @@
         {label:'기타',color:'#607D8B',members:['대구 규리산업','대구 경애산업']}
     ];
 
+    /* ===== 유틸 ===== */
     function fmtN(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
     function pN(v){return parseInt((v+'').replace(/[^0-9.-]/g,''))||0;}
     function formatBiznoInput(el){var v=el.value.replace(/[^0-9]/g,'');if(v.length>10)v=v.slice(0,10);if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);else if(v.length>3)v=v.slice(0,3)+'-'+v.slice(3);el.value=v;}
     function toast(msg){var t=document.getElementById('copyToast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},2000);}
+    function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
+    /* ===== localStorage 회사 관리 ===== */
     function gC(){try{return JSON.parse(localStorage.getItem(CK))||[];}catch(e){return[];}}
     function sC(list){localStorage.setItem(CK,JSON.stringify(list));}
 
     function openCompanyModal(){document.getElementById('companyModal').classList.add('active');rCL();}
     function closeCompanyModal(){document.getElementById('companyModal').classList.remove('active');rAD();buildCB();}
-    function rCL(){
-        var c=gC(),con=document.getElementById('companyListContainer');
-        if(!c.length){con.innerHTML='<div class="modal-empty">등록된 상호가 없습니다.</div>';return;}
-        var h='';c.forEach(function(co,i){h+='<div class="modal-list-item"><span>'+co.name+'</span><span>'+(co.bizno||'-')+'</span><div class="modal-btn-group"><button class="modal-edit-btn" onclick="editCompany('+i+')">수정</button><button class="modal-delete-btn" onclick="deleteCompany('+i+')">삭제</button></div></div>';});
-        con.innerHTML=h;
-    }
+    function rCL(){var c=gC(),con=document.getElementById('companyListContainer');if(!c.length){con.innerHTML='<div class="modal-empty">등록된 상호가 없습니다.</div>';return;}var h='';c.forEach(function(co,i){h+='<div class="modal-list-item"><span>'+co.name+'</span><span>'+(co.bizno||'-')+'</span><div class="modal-btn-group"><button class="modal-edit-btn" onclick="editCompany('+i+')">수정</button><button class="modal-delete-btn" onclick="deleteCompany('+i+')">삭제</button></div></div>';});con.innerHTML=h;}
     function addCompany(){var n=document.getElementById('newCompanyName').value.trim();if(!n){alert('상호명을 입력해주세요.');return;}var b=document.getElementById('newCompanyBizno').value.trim();var c=gC();c.push({name:n,bizno:b});sC(c);document.getElementById('newCompanyName').value='';document.getElementById('newCompanyBizno').value='';rCL();rAD();buildCB();}
     function editCompany(i){var c=gC();var nn=prompt('상호명 수정:',c[i].name);if(!nn)return;var nb=prompt('사업자번호 수정:',c[i].bizno||'');c[i].name=nn.trim();c[i].bizno=(nb||'').trim();sC(c);rCL();rAD();buildCB();}
     function deleteCompany(i){var c=gC();if(!confirm('"'+c[i].name+'" 삭제?'))return;c.splice(i,1);sC(c);rCL();rAD();buildCB();}
 
     function rAD(){var c=gC();for(var i=1;i<=TR;i++){var sel=document.getElementById('mulpumCompany'+i);var cur=sel.value;sel.innerHTML='<option value="">선택</option><option value="__direct__">직접입력</option>';c.forEach(function(co){var o=document.createElement('option');o.value=co.name;o.textContent=co.name;sel.appendChild(o);});if(cur)sel.value=cur;}}
-
     function mulpumOnCompanySelect(r){var sel=document.getElementById('mulpumCompany'+r);var val=sel.value;if(val==='__direct__'){var nm=prompt('상호명 직접입력:');if(!nm){sel.value='';return;}var c=gC();var ex=c.find(function(x){return x.name===nm.trim();});if(!ex){var bz=prompt('사업자번호 (선택):','');c.push({name:nm.trim(),bizno:(bz||'').trim()});sC(c);rAD();}sel.value=nm.trim();}var co=gC().find(function(x){return x.name===sel.value;});document.getElementById('mulpumBizno'+r).textContent=co?co.bizno:'';mulpumSave();}
-
     function mulpumFormatBase(el){var n=pN(el.value);el.value=n?fmtN(n):'';mulpumUpdateCalc();}
 
     function mulpumUpdateCalc(){var base=pN(document.getElementById('mulpumBaseAmount').value);for(var i=1;i<=TR;i++){var rateStr=document.getElementById('mulpumRate'+i).value.replace(/,/g,'');var rate=parseFloat(rateStr)||0;var raw=Math.floor(base*rate/100);var bid=Math.floor(raw/10)*10;if(i>1){var autoEl=document.getElementById('mulpumBaseAuto'+i);if(autoEl)autoEl.textContent=fmtN(base);}document.getElementById('mulpumBidAmount'+i).textContent=fmtN(bid);}mulpumSave();}
-
     function mulpumCopyBid(el){var v=el.textContent.replace(/,/g,'');navigator.clipboard.writeText(v).then(function(){el.classList.add('copied');toast('✓ '+el.textContent+' 복사됨');setTimeout(function(){el.classList.remove('copied');},1500);});}
     function mulpumToggleCheck(cb,r){cb.closest('tr').style.opacity=cb.checked?'0.4':'1';mulpumSave();}
 
-    function mulpumUpdatePreview(){var v=document.getElementById('mulpumAnnouncement').value;var pre=document.getElementById('announcementPreview');if(!v){pre.innerHTML='';return;}var parts=v.split('-');var h='';parts.forEach(function(p,i){var cls=i===0?'preview-fixed':(i===parts.length-1?'preview-product':'preview-changing');h+='<span class="preview-part '+cls+'" onclick="cpPP(this)">'+p+'</span>';if(i<parts.length-1)h+='<span style="color:#ccc;">-</span>';});pre.innerHTML=h;}
-    function cpPP(el){navigator.clipboard.writeText(el.textContent).then(function(){el.classList.add('copied');toast('✓ "'+el.textContent+'" 복사됨');setTimeout(function(){el.classList.remove('copied');},1500);});}
+    /* ===== ★ 공고번호 미리보기: R26BK013 고정(회색) + 뒷자리(빨강) + 품목번호(파랑) ===== */
+    function mulpumUpdatePreview(){
+        var v=document.getElementById('mulpumAnnouncement').value.trim();
+        var pre=document.getElementById('announcementPreview');
+        if(!v){pre.innerHTML='';return;}
+        var parts=v.split(/[\s]+/);
+        var annPart=parts[0]||'';
+        var prodParts=parts.slice(1);
+        var h='';
+        if(annPart.startsWith(FP)&&annPart.length>FP.length){
+            var fixed=annPart.substring(0,FP.length);
+            var changing=annPart.substring(FP.length);
+            h+='<span class="preview-part" onclick="cpPP(this,\''+annPart+'\')" title="공고번호 복사">';
+            h+='<span class="preview-fixed">'+fixed+'</span>';
+            h+='<span class="preview-changing">'+changing+'</span>';
+            h+='</span>';
+        }else{
+            h+='<span class="preview-part preview-fixed" onclick="cpPP(this,\''+annPart+'\')" title="공고번호 복사">'+annPart+'</span>';
+        }
+        prodParts.forEach(function(p){
+            if(p)h+='<span class="preview-part preview-product" onclick="cpPP(this,\''+p+'\')" title="품목번호 복사">'+p+'</span>';
+        });
+        pre.innerHTML=h;
+    }
+    function cpPP(el,txt){
+        navigator.clipboard.writeText(txt).then(function(){
+            el.classList.add('copied');toast('✓ "'+txt+'" 복사됨');
+            setTimeout(function(){el.classList.remove('copied');},1500);
+        });
+    }
     function mulpumAdjustFont(v){document.getElementById('mulpumAnnouncement').style.fontSize=v+'px';document.getElementById('mulpumFontDisplay').textContent=v+'px';}
 
+    /* ===== localStorage 저장/불러오기 ===== */
     function mulpumSave(){var d={announcement:document.getElementById('mulpumAnnouncement').value,base:document.getElementById('mulpumBaseAmount').value,rows:[]};for(var i=1;i<=TR;i++){d.rows.push({company:document.getElementById('mulpumCompany'+i).value,bizno:document.getElementById('mulpumBizno'+i).textContent,rate:document.getElementById('mulpumRate'+i).value,checked:document.getElementById('mulpumCheck'+i).checked});}localStorage.setItem(SK,JSON.stringify(d));}
     function mulpumLoad(){try{var d=JSON.parse(localStorage.getItem(SK));if(!d)return;document.getElementById('mulpumAnnouncement').value=d.announcement||'';document.getElementById('mulpumBaseAmount').value=d.base||'';if(d.rows)d.rows.forEach(function(r,i){var idx=i+1;if(idx>TR)return;document.getElementById('mulpumCompany'+idx).value=r.company||'';document.getElementById('mulpumBizno'+idx).textContent=r.bizno||'';document.getElementById('mulpumRate'+idx).value=r.rate||'';document.getElementById('mulpumCheck'+idx).checked=!!r.checked;if(r.checked)document.getElementById('mulpumCheck'+idx).closest('tr').style.opacity='0.4';});mulpumUpdateCalc();mulpumUpdatePreview();}catch(e){}}
-
     function mulpumReset(){if(!confirm('모든 데이터를 초기화할까요?'))return;localStorage.removeItem(SK);document.getElementById('mulpumAnnouncement').value='';document.getElementById('mulpumBaseAmount').value='';for(var i=1;i<=TR;i++){document.getElementById('mulpumCompany'+i).value='';document.getElementById('mulpumBizno'+i).textContent='';document.getElementById('mulpumRate'+i).value='';document.getElementById('mulpumBidAmount'+i).textContent='0';document.getElementById('mulpumCheck'+i).checked=false;document.getElementById('mulpumCheck'+i).closest('tr').style.opacity='1';}document.getElementById('announcementPreview').innerHTML='';exitReadonly();buildCB();}
 
-    function cloudSave(){var btn=document.getElementById('cloudSaveBtn');var ann=document.getElementById('mulpumAnnouncement').value.trim();if(!ann){alert('공고번호를 입력해주세요.');return;}btn.disabled=true;btn.textContent='⏳ 저장 중...';var rows=[];for(var i=1;i<=TR;i++){var co=document.getElementById('mulpumCompany'+i).value;if(!co)continue;rows.push({company:co,bizno:document.getElementById('mulpumBizno'+i).textContent||'',rate:document.getElementById('mulpumRate'+i).value||'',baseAuto:(i===1?document.getElementById('mulpumBaseAmount').value:document.getElementById('mulpumBaseAuto'+i).textContent||'0'),bidAmount:document.getElementById('mulpumBidAmount'+i).textContent||'0'});}fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({announcement:ann,basePrice:document.getElementById('mulpumBaseAmount').value,rows:rows})}).then(function(){btn.disabled=false;btn.textContent='☁️ 클라우드 저장';toast('✓ 클라우드에 저장되었습니다!');setTimeout(function(){loadDay();},2000);}).catch(function(e){btn.disabled=false;btn.textContent='☁️ 클라우드 저장';alert('저장 실패: '+e);});}
+    /* ===== ★★★ Firebase 클라우드 저장 ★★★ ===== */
+    function cloudSave(){
+        var btn=document.getElementById('cloudSaveBtn');
+        var ann=document.getElementById('mulpumAnnouncement').value.trim();
+        if(!ann){alert('공고번호를 입력해주세요.');return;}
+        btn.disabled=true;btn.textContent='⏳ 저장 중...';
+        var rows=[];
+        for(var i=1;i<=TR;i++){
+            var co=document.getElementById('mulpumCompany'+i).value;
+            if(!co)continue;
+            rows.push({
+                company:co,
+                bizno:document.getElementById('mulpumBizno'+i).textContent||'',
+                rate:document.getElementById('mulpumRate'+i).value||'',
+                baseAuto:(i===1?document.getElementById('mulpumBaseAmount').value:(document.getElementById('mulpumBaseAuto'+i)?document.getElementById('mulpumBaseAuto'+i).textContent:'0')),
+                bidAmount:document.getElementById('mulpumBidAmount'+i).textContent||'0'
+            });
+        }
+        var now=new Date();
+        var dateKey=todayStr();
+        var timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+        var docData={
+            announcement:ann,
+            basePrice:document.getElementById('mulpumBaseAmount').value,
+            rows:rows,
+            date:dateKey,
+            time:timeStr,
+            timestamp:firebase.firestore.FieldValue.serverTimestamp()
+        };
+        db.collection('bids').add(docData)
+        .then(function(){
+            btn.disabled=false;btn.textContent='☁️ 클라우드 저장';
+            toast('✓ Firebase에 저장되었습니다!');
+            loadDay();
+        })
+        .catch(function(e){
+            btn.disabled=false;btn.textContent='☁️ 클라우드 저장';
+            alert('저장 실패: '+e.message);
+        });
+    }
 
-    function openLoadModal(){document.getElementById('loadModal').classList.add('active');var today=new Date().toISOString().slice(0,10);document.getElementById('loadDateInput').value=today;fetchList();}
+    /* ===== ★★★ Firebase 불러오기 ★★★ ===== */
+    function openLoadModal(){document.getElementById('loadModal').classList.add('active');document.getElementById('loadDateInput').value=todayStr();fetchList();}
     function closeLoadModal(){document.getElementById('loadModal').classList.remove('active');}
-    function fetchList(){var dt=document.getElementById('loadDateInput').value;if(!dt){alert('날짜를 선택해주세요.');return;}var st=document.getElementById('loadListStatus');st.textContent='검색 중...';document.getElementById('loadList').innerHTML='';fetch(APPS_SCRIPT_URL+'?action=list&date='+dt).then(function(r){return r.json();}).then(function(data){allDay=data.items||[];st.textContent=allDay.length?allDay.length+'건 발견':'해당 날짜에 저장된 데이터가 없습니다.';var h='';allDay.forEach(function(item,idx){h+='<div class="load-list-item"><div><span class="load-ann">'+item.announcement+'</span><br><span class="load-time">'+item.time+'</span></div><button class="load-select-btn" onclick="loadItem('+idx+')">선택</button></div>';});document.getElementById('loadList').innerHTML=h;buildCB();}).catch(function(e){st.textContent='오류: '+e;});}
-    function loadDay(){var today=new Date().toISOString().slice(0,10);fetch(APPS_SCRIPT_URL+'?action=list&date='+today).then(function(r){return r.json();}).then(function(data){allDay=data.items||[];buildCB();}).catch(function(){});}
+
+    function fetchList(){
+        var dt=document.getElementById('loadDateInput').value;
+        if(!dt){alert('날짜를 선택해주세요.');return;}
+        var st=document.getElementById('loadListStatus');
+        st.textContent='검색 중...';
+        document.getElementById('loadList').innerHTML='';
+        db.collection('bids').where('date','==',dt).orderBy('timestamp','desc').get()
+        .then(function(snap){
+            allDay=[];
+            snap.forEach(function(doc){allDay.push(doc.data());});
+            st.textContent=allDay.length?allDay.length+'건 발견':'해당 날짜에 저장된 데이터가 없습니다.';
+            var h='';allDay.forEach(function(item,idx){
+                h+='<div class="load-list-item"><div><span class="load-ann">'+item.announcement+'</span><br><span class="load-time">'+(item.time||'')+'</span></div><button class="load-select-btn" onclick="loadItem('+idx+')">선택</button></div>';
+            });
+            document.getElementById('loadList').innerHTML=h;
+            buildCB();
+        }).catch(function(e){st.textContent='오류: '+e.message;});
+    }
+    function loadDay(){
+        db.collection('bids').where('date','==',todayStr()).orderBy('timestamp','desc').get()
+        .then(function(snap){
+            allDay=[];
+            snap.forEach(function(doc){allDay.push(doc.data());});
+            buildCB();
+        }).catch(function(){});
+    }
     function loadItem(idx){var item=allDay[idx];if(!item)return;document.getElementById('mulpumAnnouncement').value=item.announcement||'';document.getElementById('mulpumBaseAmount').value=item.basePrice||'';for(var i=1;i<=TR;i++){var rd=item.rows&&item.rows[i-1];document.getElementById('mulpumCompany'+i).value=rd?rd.company:'';document.getElementById('mulpumBizno'+i).textContent=rd?rd.bizno:'';document.getElementById('mulpumRate'+i).value=rd?rd.rate:'';document.getElementById('mulpumCheck'+i).checked=false;document.getElementById('mulpumCheck'+i).closest('tr').style.opacity='1';}mulpumUpdateCalc();mulpumUpdatePreview();isRO=true;document.getElementById('mulpumContainer').classList.add('readonly-mode');document.getElementById('readonlyBanner').style.display='block';closeLoadModal();mulpumSave();buildCB();}
     function exitReadonly(){isRO=false;document.getElementById('mulpumContainer').classList.remove('readonly-mode');document.getElementById('readonlyBanner').style.display='none';}
 
+    /* ===== 상호 버튼 그룹 ===== */
     function buildCB(){
         var area=document.getElementById('companyButtonsArea');if(!area)return;
         var html='';
@@ -353,21 +431,21 @@
         if(unreg.length){html+='<div class="cb-group"><span class="cb-group-label" style="background:#9E9E9E">미분류</span><div class="cb-group-btns">';unreg.forEach(function(m){var hasDC=cloudCompanies[m]?'has-data':'';html+='<button class="company-btn '+hasDC+'" onclick="showCB(\''+m.replace(/'/g,"\\'")+'\')">'+m+'</button>';});html+='</div></div>';}
         area.innerHTML=html;
     }
-
     function showCB(companyName){
         document.querySelectorAll('.company-btn').forEach(function(b){b.classList.remove('active');});
         document.querySelectorAll('.company-btn').forEach(function(b){if(b.textContent===companyName)b.classList.add('active');});
         var res=document.getElementById('cbResult');res.style.display='block';
         var found=[];
-        allDay.forEach(function(item){if(item.rows)item.rows.forEach(function(r){if(r.company===companyName){found.push({announcement:item.announcement,time:item.time,rate:r.rate,bidAmount:r.bidAmount,bizno:r.bizno,baseAuto:r.baseAuto});}});});
+        allDay.forEach(function(item){if(item.rows)item.rows.forEach(function(r){if(r.company===companyName){found.push({announcement:item.announcement,time:item.time,rate:r.rate,bidAmount:r.bidAmount,bizno:r.bizno});}});});
         if(!found.length){res.innerHTML='<div style="text-align:center;padding:20px;"><strong style="color:#1976D2;font-size:16px;">\''+companyName+'\'</strong><br><span style="color:#888;">해당 날짜에 저장된 투찰 데이터가 없습니다.</span></div>';return;}
         var h='<div style="margin-bottom:8px;"><strong style="color:#1976D2;font-size:16px;">\''+companyName+'\'</strong> 투찰 현황</div>';
         h+='<table style="width:100%;border-collapse:collapse;font-size:13px;"><tr style="background:#4a90e2;color:white;"><th style="padding:8px;">공고번호</th><th style="padding:8px;">사업자번호</th><th style="padding:8px;">투찰율</th><th style="padding:8px;">투찰금액</th><th style="padding:8px;">저장시간</th></tr>';
-        found.forEach(function(f){h+='<tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">'+f.announcement+'</td><td style="padding:8px;text-align:center;">'+(f.bizno||'-')+'</td><td style="padding:8px;text-align:right;">'+(f.rate||'-')+'%</td><td style="padding:8px;text-align:right;font-weight:700;cursor:pointer;" onclick="navigator.clipboard.writeText(\''+((f.bidAmount||'0')+'').replace(/,/g,'')+'\');toast(\'✓ 복사됨\');">'+(f.bidAmount||'0')+'</td><td style="padding:8px;font-size:12px;color:#888;">'+f.time+'</td></tr>';});
+        found.forEach(function(f){h+='<tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">'+f.announcement+'</td><td style="padding:8px;text-align:center;">'+(f.bizno||'-')+'</td><td style="padding:8px;text-align:right;">'+(f.rate||'-')+'%</td><td style="padding:8px;text-align:right;font-weight:700;cursor:pointer;" onclick="navigator.clipboard.writeText(\''+((f.bidAmount||'0')+'').replace(/,/g,'')+'\');toast(\'✓ 복사됨\');">'+(f.bidAmount||'0')+'</td><td style="padding:8px;font-size:12px;color:#888;">'+(f.time||'')+'</td></tr>';});
         h+='</table>';res.innerHTML=h;
     }
 
-    function initLoad(){rAD();mulpumLoad();buildCB();var today=new Date().toISOString().slice(0,10);fetch(APPS_SCRIPT_URL+'?action=list&date='+today).then(function(r){return r.json();}).then(function(data){allDay=data.items||[];buildCB();}).catch(function(){});}
+    /* ===== 초기 로드 ===== */
+    function initLoad(){rAD();mulpumLoad();buildCB();loadDay();}
     if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(initLoad,200);});}else{setTimeout(initLoad,200);}
     </script>
 </body>

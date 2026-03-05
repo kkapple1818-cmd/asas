@@ -72,13 +72,13 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .copy-toast{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:600;box-shadow:0 6px 20px rgba(0,184,148,.35);z-index:9999;display:none;}
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);z-index:10000;justify-content:center;align-items:center;}
 .modal-overlay.active{display:flex;}
-.modal-content{background:#fff;border-radius:16px;padding:30px;width:90%;max-width:650px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-content{background:#fff;border-radius:16px;padding:30px;width:90%;max-width:700px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #2196F3;}
 .modal-header h2{font-size:20px;color:#1a237e;}
 .modal-close{background:none;border:none;font-size:28px;cursor:pointer;color:#9e9e9e;padding:0 5px;transition:.2s;}
 .modal-close:hover{color:#e53935;}
 .modal-add-section{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-.modal-add-section input{flex:1;min-width:120px;padding:10px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;}
+.modal-add-section input{flex:1;min-width:100px;padding:10px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;}
 .modal-add-section input:focus{outline:none;border-color:#2196F3;}
 .modal-add-btn{padding:10px 20px;background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;white-space:nowrap;}
 .modal-add-btn:hover{transform:translateY(-1px);}
@@ -87,12 +87,14 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .modal-list-header span{padding:10px;text-align:center;}
 .modal-list-header span:nth-child(1){flex:1;}
 .modal-list-header span:nth-child(2){flex:1;}
-.modal-list-header span:nth-child(3){width:120px;}
+.modal-list-header span:nth-child(3){flex:0.7;}
+.modal-list-header span:nth-child(4){width:120px;}
 .modal-list-item{display:flex;align-items:center;border-bottom:1px solid #f0f0f0;}
 .modal-list-item:nth-child(even){background:#fafbfc;}
 .modal-list-item span{padding:10px;font-size:14px;}
 .modal-list-item span:nth-child(1){flex:1;color:#37474f;}
 .modal-list-item span:nth-child(2){flex:1;color:#78909c;}
+.modal-list-item span:nth-child(3){flex:0.7;color:#455a64;}
 .modal-list-item .modal-btn-group{width:120px;display:flex;gap:5px;padding:6px 10px;}
 .modal-list-item .modal-btn-group button{flex:1;padding:6px;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;}
 .modal-edit-btn{background:#42a5f5;}
@@ -171,9 +173,10 @@ td{padding:8px;font-size:13px;}.tab-button{padding:10px 15px;font-size:14px;}
 <div class="modal-add-section">
 <input type="text" id="newCompanyName" placeholder="상호명">
 <input type="text" id="newCompanyBizno" placeholder="사업자등록번호" oninput="formatBiznoInput(this)">
+<input type="text" id="newCompanyOwner" placeholder="대표자명">
 <button class="modal-add-btn" onclick="addCompany()">+ 추가</button>
 </div>
-<div class="modal-list"><div class="modal-list-header"><span>상호명</span><span>사업자등록번호</span><span>수정/삭제</span></div><div id="companyListContainer"></div></div>
+<div class="modal-list"><div class="modal-list-header"><span>상호명</span><span>사업자등록번호</span><span>대표자</span><span>수정/삭제</span></div><div id="companyListContainer"></div></div>
 </div>
 </div>
 
@@ -291,6 +294,12 @@ function formatBiznoDisplay(val) {
   }
   if (val.indexOf('-') !== -1) return val;
   return val;
+}
+
+function getOwnerByCompany(companyName) {
+  var cs = gC();
+  var f = cs.find(function(c) { return c.name === companyName; });
+  return f && f.owner ? f.owner : '';
 }
 
 function detectSector(ann) {
@@ -472,7 +481,8 @@ function mulpumOnCompanySelect(row) {
     var name = prompt('상호명 입력:');
     if (!name) { sel.value = ''; biz.textContent = ''; mulpumSave(); return; }
     var bizno = prompt('사업자등록번호 입력 (선택):');
-    var cs = gC(); cs.push({name: name, bizno: bizno || ''}); sC(cs);
+    var owner = prompt('대표자명 입력 (선택):');
+    var cs = gC(); cs.push({name: name, bizno: bizno || '', owner: owner || ''}); sC(cs);
     mulpumRefreshSelects(); sel.value = name;
     biz.textContent = formatBiznoDisplay(bizno || '');
   } else if (sel.value) {
@@ -661,13 +671,15 @@ function closeCompanyModal() { document.getElementById('companyModal').classList
 function addCompany() {
   var n = document.getElementById('newCompanyName').value.trim();
   var b = document.getElementById('newCompanyBizno').value.trim();
+  var o = document.getElementById('newCompanyOwner').value.trim();
   if (!n) { alert('상호명을 입력하세요.'); return; }
   var cs = gC();
   if (cs.find(function(c) { return c.name === n; })) { alert('이미 등록된 상호입니다.'); return; }
-  cs.push({name: n, bizno: b});
+  cs.push({name: n, bizno: b, owner: o});
   sC(cs);
   document.getElementById('newCompanyName').value = '';
   document.getElementById('newCompanyBizno').value = '';
+  document.getElementById('newCompanyOwner').value = '';
   renderCompanyList();
   mulpumRefreshSelects();
   showToast('✅ ' + n + ' 추가 완료!');
@@ -678,7 +690,7 @@ function renderCompanyList() {
   if (!cs.length) { ct.innerHTML = '<div class="modal-empty">등록된 상호가 없습니다.</div>'; return; }
   var h = '';
   cs.forEach(function(c, i) {
-    h += '<div class="modal-list-item"><span>' + c.name + '</span><span>' + formatBiznoDisplay(c.bizno) + '</span><div class="modal-btn-group"><button class="modal-edit-btn" onclick="editCompany(' + i + ')">수정</button><button class="modal-delete-btn" onclick="deleteCompany(' + i + ')">삭제</button></div></div>';
+    h += '<div class="modal-list-item"><span>' + c.name + '</span><span>' + formatBiznoDisplay(c.bizno) + '</span><span>' + (c.owner || '') + '</span><div class="modal-btn-group"><button class="modal-edit-btn" onclick="editCompany(' + i + ')">수정</button><button class="modal-delete-btn" onclick="deleteCompany(' + i + ')">삭제</button></div></div>';
   });
   ct.innerHTML = h;
 }
@@ -688,7 +700,8 @@ function editCompany(i) {
   var n = prompt('상호명:', c.name);
   if (!n) return;
   var b = prompt('사업자등록번호:', c.bizno);
-  cs[i] = {name: n, bizno: b || ''};
+  var o = prompt('대표자명:', c.owner || '');
+  cs[i] = {name: n, bizno: b || '', owner: o || ''};
   sC(cs);
   renderCompanyList();
   mulpumRefreshSelects();
@@ -907,6 +920,8 @@ function showCB(btn, company) {
     res.innerHTML = '<p style="color:#9e9e9e;">\'' + company + '\' — 해당 날짜에 저장된 투찰 데이터가 없습니다.</p>';
     return;
   }
+
+  var ownerName = getOwnerByCompany(company);
   var sectorMap = {};
   myData.forEach(function(d) {
     var sec = detectSector(d.announcement);
@@ -921,7 +936,7 @@ function showCB(btn, company) {
     var sColor = SECTOR_COLORS[sec] || '#607d8b';
     var icon = sec === '나라장터' ? '🏛️' : sec === '국방' ? '🎖️' : sec === '수자원' ? '💧' : sec === '한수원' ? '⚡' : sec === '도로공사' ? '🛣️' : sec === '한전' ? '🔌' : '📦';
     html += '<div class="sector-section"><span class="sector-label" style="background:' + sColor + '">' + icon + ' ' + sec + ' (' + items.length + '건)</span>';
-    html += '<table><thead><tr><th>공고번호/공고명</th><th>사업자번호</th><th>투찰율</th><th>투찰금액</th><th>저장시간</th><th>완료</th></tr></thead><tbody>';
+    html += '<table><thead><tr><th>공고번호/공고명</th><th>대표자</th><th>사업자번호</th><th>투찰율</th><th>투찰금액</th><th>저장시간</th><th>완료</th></tr></thead><tbody>';
     items.forEach(function(d, idx) {
       var rowId = 'cbrow_' + sec.replace(/\s/g, '') + '_' + idx;
       var annHtml = '';
@@ -940,7 +955,7 @@ function showCB(btn, company) {
         annHtml += '<span class="cb-ann-part" onclick="copyPart(this,\'' + title.replace(/'/g, "\\'") + '\')" title="공고명 복사">' + title + '</span>';
         annHtml += '&nbsp;&nbsp;<span style="background:' + sColor + ';color:#fff;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:700;">' + sec + '</span>';
       }
-      html += '<tr id="' + rowId + '"><td>' + annHtml + '</td><td>' + formatBiznoDisplay(d.bizno) + '</td><td>' + d.rate + '%</td>';
+      html += '<tr id="' + rowId + '"><td>' + annHtml + '</td><td style="font-weight:600;color:#37474f;">' + ownerName + '</td><td>' + formatBiznoDisplay(d.bizno) + '</td><td>' + d.rate + '%</td>';
       html += '<td><span class="cb-bid-copy" onclick="copyPart(this,\'' + d.bid + '\')">' + d.bid + '</span></td>';
       html += '<td>' + d.time + '</td>';
       html += '<td><button class="cb-done-btn" onclick="toggleCBDone(this,\'' + rowId + '\')">완료</button></td></tr>';

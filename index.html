@@ -259,12 +259,12 @@ td{padding:8px;font-size:13px;}.tab-button{padding:10px 15px;font-size:14px;}
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 firebase.initializeApp({
-  apiKey:"AIzaSyBGQNmLmVTAzFb_rSs265YxsvAg6-03SLk",
-  authDomain:"kkapple-8130e.firebaseapp.com",
-  projectId:"kkapple-8130e",
-  storageBucket:"kkapple-8130e.firebasestorage.app",
-  messagingSenderId:"660615080525",
-  appId:"1:660615080525:web:deda4b2e827309220a0a04"
+  apiKey: "AIzaSyBGQNmLmVTAzFb_rSs265YxsvAg6-03SLk",
+  authDomain: "kkapple-8130e.firebaseapp.com",
+  projectId: "kkapple-8130e",
+  storageBucket: "kkapple-8130e.firebasestorage.app",
+  messagingSenderId: "660615080525",
+  appId: "1:660615080525:web:deda4b2e827309220a0a04"
 });
 var db = firebase.firestore();
 var TR = 13;
@@ -283,7 +283,6 @@ var COMPANY_GROUPS = [
 var SECTOR_KEYWORDS = ['국방','수자원','한수원','도로공사','한전','한국전력'];
 var SECTOR_COLORS = {'나라장터':'#1976D2','국방':'#e65100','수자원':'#00695c','한수원':'#4a148c','도로공사':'#2e7d32','한전':'#f57f17','기타':'#607d8b'};
 
-/* ===== 사업자번호 표시용 포맷 함수 ===== */
 function formatBiznoDisplay(val) {
   if (!val) return '';
   var v = val.replace(/[^0-9]/g, '');
@@ -327,11 +326,9 @@ function saveCompaniesToFirebase(a) { db.collection('companies').doc('list').set
 function loadCompaniesFromFirebase() {
   db.collection('companies').doc('list').get().then(function(doc) {
     if (doc.exists && doc.data().data) {
-      var fbData = doc.data().data, local = gC();
-      if (fbData.length > local.length) {
-        localStorage.setItem(CK, JSON.stringify(fbData));
-        if (mulpumInited) mulpumRefreshSelects();
-      }
+      var fbData = doc.data().data;
+      localStorage.setItem(CK, JSON.stringify(fbData));
+      if (mulpumInited) mulpumRefreshSelects();
     }
   }).catch(function(){});
 }

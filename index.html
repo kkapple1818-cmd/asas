@@ -141,16 +141,17 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .cb-result{margin-top:12px;padding:16px;background:#fff;border-radius:12px;border:1px solid #e0e0e0;font-size:14px;min-height:40px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
 .cb-result table{width:100%;border-collapse:collapse;margin-top:8px;}
 .cb-result th{background:linear-gradient(135deg,#42a5f5,#1976D2);color:#fff;padding:10px;font-size:13px;}
-.cb-result td{padding:10px;border:1px solid #e0e0e0;font-size:13px;color:#37474f;}
+.cb-result td{padding:10px;border:1px solid #e0e0e0;font-size:13px;color:#37474f;text-align:center;}
+.cb-result td:first-child{text-align:left;}
 .cb-ann-part{cursor:pointer;padding:2px 6px;border-radius:4px;transition:.2s;display:inline-block;}
 .cb-ann-part:hover{background:#e3f2fd;outline:1px solid #42a5f5;}
 .cb-ann-part.copied{background:#c8e6c9;}
 .cb-bid-copy{cursor:pointer;font-weight:700;color:#1565c0;}
 .cb-bid-copy:hover{background:#e3f2fd;border-radius:4px;}
-.cb-done-btn{padding:4px 12px;background:linear-gradient(135deg,#ff6b6b,#ee5a24);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;}
-.cb-done-btn:hover{transform:translateY(-1px);}
-.cb-done-btn.done{background:linear-gradient(135deg,#b0bec5,#78909c);}
-.cb-row-done{background:#fff3f3 !important;opacity:.6;}
+.cb-done-btn{padding:4px 12px;background:#e0e0e0;color:#666;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;}
+.cb-done-btn:hover{background:#bdbdbd;}
+.cb-done-btn.done{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;}
+.cb-row-done{background:#f0faf7 !important;opacity:.6;}
 .main-row-done{background:#fff3f3 !important;opacity:.6;}
 .sector-section{margin-bottom:16px;}
 .sector-label{display:inline-block;padding:5px 16px;border-radius:8px;color:#fff;font-weight:700;font-size:14px;margin-bottom:6px;}
@@ -955,7 +956,7 @@ function showCB(btn, company) {
         annHtml += '<span class="cb-ann-part" onclick="copyPart(this,\'' + title.replace(/'/g, "\\'") + '\')" title="공고명 복사">' + title + '</span>';
         annHtml += '&nbsp;&nbsp;<span style="background:' + sColor + ';color:#fff;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:700;">' + sec + '</span>';
       }
-      html += '<tr id="' + rowId + '"><td>' + annHtml + '</td><td style="font-weight:600;color:#37474f;">' + ownerName + '</td><td>' + formatBiznoDisplay(d.bizno) + '</td><td>' + d.rate + '%</td>';
+      html += '<tr id="' + rowId + '"><td style="text-align:left;">' + annHtml + '</td><td style="font-weight:600;color:#37474f;">' + ownerName + '</td><td>' + formatBiznoDisplay(d.bizno) + '</td><td>' + d.rate + '%</td>';
       html += '<td><span class="cb-bid-copy" onclick="copyPart(this,\'' + d.bid + '\')">' + d.bid + '</span></td>';
       html += '<td>' + d.time + '</td>';
       html += '<td><button class="cb-done-btn" onclick="toggleCBDone(this,\'' + rowId + '\')">완료</button></td></tr>';

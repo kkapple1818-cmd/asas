@@ -157,21 +157,16 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .cb-result-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .cb-result-table-wrap table{min-width:700px;}
 
-/* ========== 모바일 최적화 ========== */
 @media(max-width:768px){
   body{padding:8px;}
   .container{padding:14px;border-radius:12px;}
   .tabs{gap:6px;margin-bottom:12px;}
   .tab-button{padding:12px 8px;font-size:14px;}
-
-  /* 헤더 */
   .header-section{flex-direction:column;gap:12px;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;}
   h1{font-size:17px;}
   .reset-button{padding:10px 18px;font-size:14px;width:100%;text-align:center;}
   .header-section > div{width:100%;display:flex;gap:6px;}
   .header-section > div > button,.header-section > div > .cloud-btn{flex:1;font-size:13px;padding:10px 8px;}
-
-  /* 적격심사 테이블 */
   td,th{padding:8px 6px;font-size:12px;}
   td:first-child{width:35%;}
   input[type="number"],input[type="text"]{padding:6px;font-size:13px;}
@@ -179,44 +174,32 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
   .section-title{font-size:14px;padding:10px 12px;margin:18px 0 10px 0;}
   .formula-section{padding:14px;font-size:11px;}
   .final-cell{font-size:16px;}
-
-  /* 물품투찰 공고번호 */
   .mulpum-announcement-label{font-size:22px;}
   .mulpum-announcement-input{font-size:28px;padding:14px;min-height:60px;}
   .mulpum-announcement-preview{font-size:16px;padding:10px 14px;gap:10px;}
   .mulpum-font-control{padding:10px;gap:8px;}
   .mulpum-font-control label{font-size:13px;}
   .mulpum-font-control span{font-size:13px;min-width:45px;}
-
-  /* 물품투찰 테이블 - 가로 스크롤 */
   .mulpum-table{min-width:580px;}
   .mulpum-table td input,.mulpum-table td select{padding:8px 4px;font-size:12px;}
   .mulpum-bizno-cell{font-size:12px;padding:6px;}
   .mulpum-bid-amount{padding:8px 6px;font-size:13px;}
   .mulpum-base-auto{padding:8px 6px;font-size:12px;}
-
-  /* 액션바 */
   .action-bar{padding:14px;gap:8px;}
   .btn-reset,.btn-cloud{padding:12px 20px;font-size:14px;flex:1;}
   .mulpum-manage-btn{padding:10px 14px;font-size:13px;}
   .cloud-btn{padding:10px 14px;font-size:13px;}
-
-  /* 상호 버튼 */
   .company-buttons{margin:15px 0;}
   .cb-group{margin-bottom:12px;}
   .cb-group-label{font-size:13px;padding:4px 10px;}
   .cb-group-btns{gap:4px;}
   .company-btn{padding:6px 10px;font-size:11px;border-radius:6px;}
   .badge{min-width:16px;height:16px;line-height:16px;font-size:9px;top:-6px;right:-6px;}
-
-  /* 상세 결과 테이블 */
   .cb-result{padding:10px;font-size:12px;}
   .cb-result th{padding:8px 4px;font-size:11px;}
   .cb-result td{padding:8px 4px;font-size:11px;}
   .cb-result h3{font-size:15px;}
   .sector-label{font-size:12px;padding:4px 10px;}
-
-  /* 모달 */
   .modal-content,.load-modal-content{padding:16px;width:95%;max-height:85vh;border-radius:12px;}
   .modal-header h2{font-size:17px;}
   .modal-add-section{gap:6px;}
@@ -227,24 +210,17 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
   .modal-list-item span{padding:8px 4px;font-size:12px;}
   .modal-list-item .modal-btn-group{width:100px;padding:4px 6px;}
   .modal-list-item .modal-btn-group button{padding:5px;font-size:11px;}
-
-  /* 불러오기 모달 */
   .load-date-input{padding:8px;font-size:14px;width:100%;}
   .load-search-btn,.load-complete-btn{padding:8px 14px;font-size:13px;}
   .load-list-item{padding:10px;flex-wrap:wrap;gap:8px;}
   .load-ann{font-size:13px;}
   .load-time{font-size:11px;}
   .load-select-btn,.load-delete-btn{padding:6px 12px;font-size:12px;}
-
-  /* 읽기전용 배너 */
   .readonly-banner{font-size:13px;padding:10px;}
   .exit-readonly-btn{font-size:12px;padding:6px 14px;}
-
-  /* 토스트 */
   .copy-toast{top:auto;bottom:20px;right:10px;left:10px;text-align:center;font-size:14px;padding:12px 16px;border-radius:10px;}
 }
 
-/* 더 작은 화면 (아이폰 SE 등) */
 @media(max-width:380px){
   body{padding:4px;}
   .container{padding:10px;}
@@ -372,7 +348,7 @@ var SK = 'mulpum_data_v8';
 var CK = 'mulpum_companies_v1';
 
 var COMPANY_GROUPS = [
- {label:'법인계열',color:'#2c3e50',members:['(주)동아투어','(주)투어동아','(주)무지개여행사','(주)서아여행사 대구','(주)서아여행사 순천','(주)서아관광 광주','(주)서아투어 광주','(주)새동아투어 광주']},
+  {label:'법인계열',color:'#2c3e50',members:['(주)동아투어','(주)투어동아','(주)무지개여행사','(주)서아여행사 대구','(주)서아여행사 순천','(주)서아관광 광주','(주)서아투어 광주','(주)새동아투어 광주']},
   {label:'늘빛',color:'#e67e22',members:['늘빛 대구','늘빛 광주','늘빛 순천','늘빛 창원','늘빛 진주']},
   {label:'새빛',color:'#e74c3c',members:['새빛 대구','새빛 강원','새빛 경기','새빛 충남','새빛 충북','새빛 전북']},
   {label:'비둘기',color:'#27ae60',members:['비둘기 대구','비둘기 광주','비둘기 순천','비둘기 창원','비둘기 진주']},
@@ -877,6 +853,8 @@ function cloudSave() {
 }
 
 var allDayData = [];
+var cbDoneState = {};
+
 function openLoadModal() {
   document.getElementById('loadModal').classList.add('active');
   var now = new Date();
@@ -891,6 +869,7 @@ function fetchList() {
   var statusEl = document.getElementById('loadListStatus');
   statusEl.textContent = '검색 중...';
   listEl.innerHTML = '';
+  cbDoneState = {};
   db.collection('bids').where('date', '==', dateVal).orderBy('timestamp', 'desc').get().then(function(snap) {
     if (snap.empty) {
       statusEl.textContent = '해당 날짜에 저장된 데이터가 없습니다.';
@@ -1068,6 +1047,22 @@ function showCB(btn, company) {
   });
   res.style.display = 'block';
   res.innerHTML = html;
+
+  // 체크 상태 복원
+  Object.keys(cbDoneState).forEach(function(rowId) {
+    if (!cbDoneState[rowId]) return;
+    var row = document.getElementById(rowId);
+    if (!row) return;
+    var cb = row.querySelector('.cb-done-checkbox');
+    if (cb) {
+      cb.checked = true;
+      row.classList.add('cb-row-done');
+      var annCell = row.querySelector('.cb-ann-copy-cell');
+      var bidCell = row.querySelector('.cb-bid-copy');
+      if (annCell) annCell.classList.add('done-locked');
+      if (bidCell) bidCell.classList.add('done-locked');
+    }
+  });
 }
 
 function copyAnnCell(el, txt) {
@@ -1105,6 +1100,7 @@ function toggleCBDoneCheckbox(cb, rowId) {
     if (annCell) annCell.classList.remove('done-locked');
     if (bidCell) bidCell.classList.remove('done-locked');
   }
+  cbDoneState[rowId] = cb.checked;
 }
 
 calculate();

@@ -339,19 +339,33 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 firebase.initializeApp({
-  apiKey: "AIzaSyBGQNmLmVTAzFb_rSs265YxsvAg6-03SLk",
-  authDomain: "kkapple-8130e.firebaseapp.com",
-  projectId: "kkapple-8130e",
-  storageBucket: "kkapple-8130e.firebasestorage.app",
-  messagingSenderId: "660615080525",
-  appId: "1:660615080525:web:deda4b2e827309220a0a04"
+  apiKey:"AIzaSyBGQNmLmVTAzFb_rSs265YxsvAg6-03SLk",
+  authDomain:"kkapple-8130e.firebaseapp.com",
+  projectId:"kkapple-8130e",
+  storageBucket:"kkapple-8130e.firebasestorage.app",
+  messagingSenderId:"660615080525",
+  appId:"1:660615080525:web:deda4b2e827309220a0a04"
 });
-var db = firebase.firestore();
-var TR = 13;
-var SK = 'mulpum_data_v8';
-var CK = 'mulpum_companies_v1';
+var db=firebase.firestore();
+var TR=13;
+var SK='mulpum_data_v8';
+var CK='mulpum_companies_v1';
 
-var COMPANY_GROUPS = [
+// ★ 텔레그램 알림 설정
+var TELEGRAM_BOT_TOKEN='8366923802:AAGjPEchGfTRW7KTT7udGE-GdZ67OJ2Uw4U';
+var TELEGRAM_CHAT_IDS=['8189315762']; // 상대방 ID 추가 시: ['8189315762','상대방ID']
+
+function sendTelegram(msg){
+  TELEGRAM_CHAT_IDS.forEach(function(chatId){
+    fetch('https://api.telegram.org/bot'+TELEGRAM_BOT_TOKEN+'/sendMessage',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:chatId,text:msg,parse_mode:'HTML'})
+    }).catch(function(){});
+  });
+}
+
+var COMPANY_GROUPS=[
   {label:'법인계열',color:'#2c3e50',members:['(주)동아투어','(주)투어동아','(주)무지개여행사','(주)서아여행사 대구','(주)서아여행사 순천','(주)서아관광 광주','(주)서아투어 광주','(주)새동아투어 광주']},
   {label:'늘빛',color:'#e67e22',members:['늘빛 대구','늘빛 광주','늘빛 순천','늘빛 창원','늘빛 진주']},
   {label:'새빛',color:'#e74c3c',members:['새빛 대구','새빛 강원','새빛 경기','새빛 충남','새빛 충북','새빛 전북']},
@@ -360,57 +374,57 @@ var COMPANY_GROUPS = [
   {label:'기타',color:'#7f8c8d',members:['대구 규리산업','대구 경애산업','노준수 현대여행사','노민채 문화여행사','노현지 한별여행사']}
 ];
 
-var SECTOR_KEYWORDS = ['국방','수자원','한수원','도로공사','한전','한국전력'];
-var SECTOR_COLORS = {'나라장터':'#1976D2','국방':'#e65100','수자원':'#00695c','한수원':'#4a148c','도로공사':'#2e7d32','한전':'#f57f17','기타':'#607d8b'};
+var SECTOR_KEYWORDS=['국방','수자원','한수원','도로공사','한전','한국전력'];
+var SECTOR_COLORS={'나라장터':'#1976D2','국방':'#e65100','수자원':'#00695c','한수원':'#4a148c','도로공사':'#2e7d32','한전':'#f57f17','기타':'#607d8b'};
 
-function formatBiznoDisplay(val) {
-  if (!val) return '';
-  var v = val.replace(/[^0-9]/g,'');
-  if (v.length===10) return v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);
-  if (val.indexOf('-')!==-1) return val;
+function formatBiznoDisplay(val){
+  if(!val)return '';
+  var v=val.replace(/[^0-9]/g,'');
+  if(v.length===10)return v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);
+  if(val.indexOf('-')!==-1)return val;
   return val;
 }
 
-function getOwnerByCompany(companyName) {
-  var cs = gC();
-  var f = cs.find(function(c){return c.name===companyName;});
-  return f && f.owner ? f.owner : '';
+function getOwnerByCompany(companyName){
+  var cs=gC();
+  var f=cs.find(function(c){return c.name===companyName;});
+  return f&&f.owner?f.owner:'';
 }
 
-function detectSector(ann) {
-  var up = (ann||'').toUpperCase();
-  if (/^R\d{2}BK/i.test(up)) return '나라장터';
-  var trimmed = (ann||'').trim();
-  for (var i = SECTOR_KEYWORDS.length-1; i >= 0; i--) {
-    if (trimmed.endsWith(SECTOR_KEYWORDS[i])) return SECTOR_KEYWORDS[i]==='한국전력'?'한전':SECTOR_KEYWORDS[i];
+function detectSector(ann){
+  var up=(ann||'').toUpperCase();
+  if(/^R\d{2}BK/i.test(up))return '나라장터';
+  var trimmed=(ann||'').trim();
+  for(var i=SECTOR_KEYWORDS.length-1;i>=0;i--){
+    if(trimmed.endsWith(SECTOR_KEYWORDS[i]))return SECTOR_KEYWORDS[i]==='한국전력'?'한전':SECTOR_KEYWORDS[i];
   }
   return '기타';
 }
 
-function extractTitle(ann) {
-  if (detectSector(ann)==='나라장터') return ann;
-  var trimmed = (ann||'').trim();
-  for (var i = 0; i < SECTOR_KEYWORDS.length; i++) {
-    if (trimmed.endsWith(SECTOR_KEYWORDS[i])) return trimmed.slice(0,-SECTOR_KEYWORDS[i].length).trim();
+function extractTitle(ann){
+  if(detectSector(ann)==='나라장터')return ann;
+  var trimmed=(ann||'').trim();
+  for(var i=0;i<SECTOR_KEYWORDS.length;i++){
+    if(trimmed.endsWith(SECTOR_KEYWORDS[i]))return trimmed.slice(0,-SECTOR_KEYWORDS[i].length).trim();
   }
   return ann;
 }
 
-function getAnnKey(ann) {
-  if (detectSector(ann)==='나라장터') return (ann||'').trim().split(/\s+/)[0].toUpperCase();
+function getAnnKey(ann){
+  if(detectSector(ann)==='나라장터')return(ann||'').trim().split(/\s+/)[0].toUpperCase();
   return extractTitle(ann).toLowerCase();
 }
 
-function gC(){try{return JSON.parse(localStorage.getItem(CK))||[];}catch(e){return [];}}
+function gC(){try{return JSON.parse(localStorage.getItem(CK))||[];}catch(e){return[];}}
 function sC(a){localStorage.setItem(CK,JSON.stringify(a));saveCompaniesToFirebase(a);}
 function saveCompaniesToFirebase(a){db.collection('companies').doc('list').set({data:a}).catch(function(){});}
 
 function loadCompaniesFromFirebase(){
   db.collection('companies').doc('list').get().then(function(doc){
-    if (doc.exists && doc.data().data) {
-      var fbData = doc.data().data;
+    if(doc.exists&&doc.data().data){
+      var fbData=doc.data().data;
       localStorage.setItem(CK,JSON.stringify(fbData));
-      if (mulpumInited) mulpumRefreshSelects();
+      if(mulpumInited)mulpumRefreshSelects();
     }
   }).catch(function(){});
 }
@@ -419,23 +433,23 @@ function switchTab(t){
   document.querySelectorAll('.tab-button').forEach(function(b,i){b.classList.toggle('active',i===(t==='eligibility'?0:1));});
   document.getElementById('eligibility-tab').classList.toggle('active',t==='eligibility');
   document.getElementById('mulpum-tab').classList.toggle('active',t==='mulpum');
-  if (t==='mulpum') mulpumInit();
+  if(t==='mulpum')mulpumInit();
 }
 
 function parseMoney(s){return parseFloat((s+'').replace(/[^0-9.-]/g,''))||0;}
 
 function handlePriceInput(el){
-  var v = el.value.replace(/[^0-9]/g,'');
-  el.value = v ? parseInt(v).toLocaleString() : '';
+  var v=el.value.replace(/[^0-9]/g,'');
+  el.value=v?parseInt(v).toLocaleString():'';
   calculate();
 }
 
 function formatBiznoInput(el){
-  var v = el.value.replace(/[^0-9]/g,'');
-  if (v.length>10) v=v.slice(0,10);
-  if (v.length>5) v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);
-  else if (v.length>3) v=v.slice(0,3)+'-'+v.slice(3);
-  el.value = v;
+  var v=el.value.replace(/[^0-9]/g,'');
+  if(v.length>10)v=v.slice(0,10);
+  if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);
+  else if(v.length>3)v=v.slice(0,3)+'-'+v.slice(3);
+  el.value=v;
 }
 
 function calculate(){
@@ -448,12 +462,12 @@ function calculate(){
   var ep=parseMoney(document.getElementById('estimatedPrice').value);
   var bp=parseMoney(document.getElementById('bidPrice').value);
   var bidScore=0,ratio=0,ratioP=0,failed=false;
-  if (ep>0&&bp>0){
+  if(ep>0&&bp>0){
     ratio=Math.round((bp/ep)*10000)/10000;
     ratioP=ratio*100;
     document.getElementById('ratio').textContent=ratio.toFixed(4);
     document.getElementById('ratioPercent').textContent=ratioP.toFixed(2);
-    if (ratioP<87.995){failed=true;}
+    if(ratioP<87.995){failed=true;}
     else{var r2=ratio;if(ratioP>=94)r2=0.94;bidScore=70-4*Math.abs((0.91-r2)*100);bidScore=Math.max(2,Math.min(70,bidScore));bidScore=Math.round(bidScore*100)/100;}
   }
   var cell=document.getElementById('bidScoreCell');
@@ -562,10 +576,8 @@ function mulpumUpdateCalc(){
     var cell=document.getElementById('mulpumBidAmount'+i);
     if(bid>0){
       if(baseVal>=10000000){
-        // 1,000만원 이상: 소수점 버림(절삭), 원단위까지만
         cell.textContent=Math.floor(bid).toLocaleString();
       }else{
-        // 1,000만원 미만: 소수점 포함
         cell.textContent=formatBidAmount(bid);
       }
     }else{
@@ -575,7 +587,6 @@ function mulpumUpdateCalc(){
   }
   mulpumSave();
 }
-
 
 function mulpumCopyBid(el){
   var t=el.textContent.trim();
@@ -754,6 +765,10 @@ function cloudSave(){
   var now=new Date();
   var dateStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
   var timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+
+  // ★ 상호 목록 텍스트 생성
+  var companyList=rows.map(function(r){return r.company;}).join(', ');
+
   var saveData={announcement:ann,basePrice:baseVal,rows:rows,date:dateStr,time:timeStr,timestamp:firebase.firestore.FieldValue.serverTimestamp()};
   var annKey=getAnnKey(ann);
   db.collection('bids').where('date','==',dateStr).get().then(function(snap){
@@ -761,9 +776,15 @@ function cloudSave(){
     snap.forEach(function(doc){var d=doc.data();if(getAnnKey(d.announcement||'')===annKey)existingDocId=doc.id;});
     if(existingDocId){
       if(!confirm('「'+ann+'」 공고가 오늘('+dateStr+') 이미 저장되어 있습니다.\n덮어쓰시겠습니까?'))return;
-      db.collection('bids').doc(existingDocId).update(saveData).then(function(){showToast('☁️ 덮어쓰기 완료!');}).catch(function(err){alert('저장 오류: '+err.message);});
+      db.collection('bids').doc(existingDocId).update(saveData).then(function(){
+        showToast('☁️ 덮어쓰기 완료!');
+        sendTelegram('🔄 <b>투찰 데이터 업데이트</b>\n\n📋 공고: '+ann+'\n👥 상호('+rows.length+'건): '+companyList+'\n📅 일시: '+dateStr+' '+timeStr);
+      }).catch(function(err){alert('저장 오류: '+err.message);});
     }else{
-      db.collection('bids').add(saveData).then(function(){showToast('☁️ Firebase 저장 완료!');}).catch(function(err){alert('저장 오류: '+err.message);});
+      db.collection('bids').add(saveData).then(function(){
+        showToast('☁️ Firebase 저장 완료!');
+        sendTelegram('💾 <b>투찰 데이터 신규저장</b>\n\n📋 공고: '+ann+'\n👥 상호('+rows.length+'건): '+companyList+'\n📅 일시: '+dateStr+' '+timeStr);
+      }).catch(function(err){alert('저장 오류: '+err.message);});
     }
   }).catch(function(err){alert('중복 확인 오류: '+err.message);});
 }
@@ -893,7 +914,7 @@ function showCB(btn,company){
   allDayData.forEach(function(item){
     if(!item.rows)return;
     item.rows.forEach(function(r){
-      if(r.company===company) myData.push({announcement:item.announcement,time:item.time,bizno:r.bizno,rate:r.rate,bid:r.bid,checked:r.checked,_id:item._id});
+      if(r.company===company)myData.push({announcement:item.announcement,time:item.time,bizno:r.bizno,rate:r.rate,bid:r.bid,checked:r.checked,_id:item._id});
     });
   });
   if(!myData.length){
@@ -954,7 +975,6 @@ function showCB(btn,company){
     html+='</tbody></table></div></div>';
   });
 
-  // 저장 버튼
   html+='<button class="cb-save-done-btn" onclick="saveCBDoneState()">💾 완료상태 저장</button>';
 
   res.style.display='block';
@@ -1001,27 +1021,23 @@ function toggleCBDoneCheckbox(cb,rowId){
 function saveCBDoneState(){
   if(!currentCBCompany||!allDayData.length){showToast('저장할 데이터가 없습니다.');return;}
 
-  // 현재 화면의 체크박스 상태 수집
   var checkboxes=document.querySelectorAll('#cbResult .cb-done-checkbox');
   var checkedAnns={};
   checkboxes.forEach(function(cb){
     var row=cb.closest('tr');
     if(!row)return;
-    // 해당 행의 공고번호 셀에서 텍스트 추출
     var annCell=row.querySelector('.cb-ann-copy-cell');
     if(!annCell)return;
     var annText=annCell.textContent.trim();
     checkedAnns[annText]=cb.checked;
   });
 
-  // allDayData에서 현재 회사의 checked 상태 업데이트 후 Firebase에 저장
   var updatePromises=[];
   allDayData.forEach(function(item){
     if(!item.rows)return;
     var changed=false;
     item.rows.forEach(function(r){
       if(r.company!==currentCBCompany)return;
-      // 공고의 텍스트로 매칭
       var sec=detectSector(item.announcement);
       var matchKey='';
       if(sec==='나라장터'){
@@ -1029,9 +1045,8 @@ function saveCBDoneState(){
       }else{
         matchKey=extractTitle(item.announcement);
       }
-      // 체크박스 상태 찾기 - annCell 텍스트에 matchKey가 포함되어있는지 확인
       Object.keys(checkedAnns).forEach(function(annText){
-        if(annText.indexOf(matchKey)!==-1 || matchKey.indexOf(annText)!==-1 || annText===matchKey){
+        if(annText.indexOf(matchKey)!==-1||matchKey.indexOf(annText)!==-1||annText===matchKey){
           if(r.checked!==checkedAnns[annText]){
             r.checked=checkedAnns[annText];
             changed=true;

@@ -7,6 +7,40 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;padding:20px;background:#f0f2f5;line-height:1.6;}
+
+/* ===== 로그인 화면 ===== */
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a237e,#283593,#1565c0);z-index:99999;display:flex;justify-content:center;align-items:center;}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:90%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;}
+.login-box h2{color:#1a237e;font-size:22px;margin-bottom:8px;}
+.login-box p{color:#78909c;font-size:14px;margin-bottom:30px;}
+.login-input{width:100%;padding:14px 18px;border:2px solid #e0e0e0;border-radius:12px;font-size:16px;transition:.3s;margin-bottom:16px;}
+.login-input:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,243,.15);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#2196F3,#1976D2);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 15px rgba(25,118,210,.3);}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(25,118,210,.4);}
+.login-btn:active{transform:translateY(0);}
+.login-error{color:#e53935;font-size:13px;margin-top:10px;min-height:20px;}
+.login-footer{margin-top:20px;display:flex;justify-content:center;gap:16px;}
+.login-footer button{background:none;border:none;color:#78909c;font-size:13px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.2s;}
+.login-footer button:hover{color:#1976D2;background:#e3f2fd;}
+
+/* ===== 비밀번호 변경 모달 ===== */
+.pw-change-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);z-index:100000;justify-content:center;align-items:center;}
+.pw-change-overlay.active{display:flex;}
+.pw-change-box{background:#fff;border-radius:16px;padding:30px;width:90%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.pw-change-box h3{color:#1a237e;margin-bottom:20px;font-size:18px;}
+.pw-change-box input{width:100%;padding:12px 16px;border:2px solid #e0e0e0;border-radius:10px;font-size:14px;margin-bottom:12px;transition:.3s;}
+.pw-change-box input:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,243,.15);}
+.pw-change-btns{display:flex;gap:10px;margin-top:8px;}
+.pw-change-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;}
+.pw-change-save{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;}
+.pw-change-save:hover{transform:translateY(-1px);}
+.pw-change-cancel{background:#e0e0e0;color:#555;}
+.pw-change-cancel:hover{background:#bdbdbd;}
+.pw-change-msg{font-size:13px;margin-top:10px;min-height:20px;text-align:center;}
+
+/* ===== 메인 앱 (로그인 전 숨김) ===== */
+.app-wrap{display:none;}
+
 .tabs{display:flex;gap:10px;max-width:900px;margin:0 auto 20px auto;}
 .tab-button{flex:1;padding:15px 20px;background:#e0e0e0;border:none;border-radius:12px 12px 0 0;cursor:pointer;font-size:16px;font-weight:600;transition:.3s;color:#555;}
 .tab-button:hover{background:#cfd8dc;}
@@ -150,10 +184,10 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .cb-result th{background:linear-gradient(135deg,#42a5f5,#1976D2);color:#fff;padding:10px;font-size:13px;}
 .cb-result td{padding:10px;border:1px solid #e0e0e0;font-size:13px;color:#37474f;text-align:center;}
 .cb-result td:first-child{text-align:left;}
-.cb-ann-copy-cell{cursor:pointer;transition:.2s;}
-.cb-ann-copy-cell:hover{background:#e3f2fd;}
-.cb-ann-copy-cell.copied{background:#c8e6c9;}
-.cb-ann-copy-cell.done-locked{cursor:default;pointer-events:none;}
+.cb-ann-part{cursor:pointer;padding:2px 4px;border-radius:4px;transition:.2s;display:inline-block;}
+.cb-ann-part:hover{background:#bbdefb;outline:1px solid #42a5f5;}
+.cb-ann-part.copied{background:#c8e6c9;outline:1px solid #4caf50;}
+.cb-ann-part.done-locked{cursor:default;pointer-events:none;}
 .cb-bid-copy{cursor:pointer;font-weight:700;color:#1565c0;}
 .cb-bid-copy:hover{background:#e3f2fd;border-radius:4px;}
 .cb-bid-copy.done-locked{cursor:default;color:#bdbdbd;pointer-events:none;}
@@ -167,9 +201,6 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .cb-save-done-btn{display:block;margin:16px auto 0 auto;padding:14px 40px;background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:16px;font-weight:700;box-shadow:0 4px 15px rgba(0,184,148,.25);transition:all .2s;}
 .cb-save-done-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,184,148,.35);}
 .cb-save-done-btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,184,148,.2);}
-.cb-ann-part{cursor:pointer;padding:2px 4px;border-radius:4px;transition:.2s;display:inline-block;}
-.cb-ann-part:hover{background:#bbdefb;outline:1px solid #42a5f5;}
-.cb-ann-part.copied{background:#c8e6c9;outline:1px solid #4caf50;}
 
 @media(max-width:768px){
   body{padding:8px;}
@@ -238,6 +269,10 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
   .exit-readonly-btn{font-size:12px;padding:6px 14px;}
   .copy-toast{top:auto;bottom:20px;right:10px;left:10px;text-align:center;font-size:14px;padding:12px 16px;border-radius:10px;}
   .cb-save-done-btn{padding:12px 30px;font-size:14px;}
+  .login-box{padding:24px;width:92%;}
+  .login-box h2{font-size:18px;}
+  .login-input{padding:12px 14px;font-size:15px;}
+  .login-btn{padding:12px;font-size:15px;}
 }
 
 @media(max-width:380px){
@@ -251,10 +286,44 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
   .cb-result th{font-size:10px;padding:6px 2px;}
   .cb-result td{font-size:10px;padding:6px 2px;}
   .modal-content,.load-modal-content{padding:12px;width:98%;}
+  .login-box{padding:20px;}
 }
 </style>
 </head>
 <body>
+
+<!-- ===== 로그인 화면 ===== -->
+<div id="loginOverlay" class="login-overlay">
+<div class="login-box">
+<h2>적격심사 + 물품투찰</h2>
+<p>비밀번호를 입력하세요</p>
+<input type="password" id="loginPassword" class="login-input" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+<button class="login-btn" onclick="doLogin()">로그인</button>
+<div id="loginError" class="login-error"></div>
+<div class="login-footer">
+<button onclick="openPwChange()">비밀번호 변경</button>
+</div>
+</div>
+</div>
+
+<!-- ===== 비밀번호 변경 모달 ===== -->
+<div id="pwChangeOverlay" class="pw-change-overlay">
+<div class="pw-change-box">
+<h3>비밀번호 변경</h3>
+<input type="password" id="pwCurrent" placeholder="현재 비밀번호 또는 마스터 비밀번호">
+<input type="password" id="pwNew" placeholder="새 비밀번호">
+<input type="password" id="pwNewConfirm" placeholder="새 비밀번호 확인">
+<div class="pw-change-btns">
+<button class="pw-change-cancel" onclick="closePwChange()">취소</button>
+<button class="pw-change-save" onclick="doPwChange()">변경</button>
+</div>
+<div id="pwChangeMsg" class="pw-change-msg"></div>
+</div>
+</div>
+
+<!-- ===== 메인 앱 ===== -->
+<div class="app-wrap" id="appWrap">
+
 <div id="copyToast" class="copy-toast"></div>
 
 <div id="companyModal" class="modal-overlay">
@@ -358,6 +427,8 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 </div>
 </div>
 
+</div><!-- /app-wrap -->
+
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
@@ -387,6 +458,83 @@ function sendTelegram(msg){
   });
 }
 
+/* ===== 로그인 기능 ===== */
+var cachedAuthData=null;
+
+function doLogin(){
+  var pw=document.getElementById('loginPassword').value;
+  var errEl=document.getElementById('loginError');
+  if(!pw){errEl.textContent='비밀번호를 입력하세요.';return;}
+  errEl.textContent='확인 중...';
+  db.collection('settings').doc('auth').get().then(function(doc){
+    if(!doc.exists){errEl.textContent='인증 설정이 없습니다. 관리자에게 문의하세요.';return;}
+    var data=doc.data();
+    cachedAuthData=data;
+    if(pw===data.password||pw===data.masterPassword){
+      document.getElementById('loginOverlay').style.display='none';
+      document.getElementById('appWrap').style.display='block';
+      sessionStorage.setItem('loggedIn','true');
+      calculate();
+    }else{
+      errEl.textContent='비밀번호가 틀렸습니다.';
+      errEl.style.color='#e53935';
+    }
+  }).catch(function(err){
+    errEl.textContent='연결 오류: '+err.message;
+  });
+}
+
+function openPwChange(){
+  document.getElementById('pwChangeOverlay').classList.add('active');
+  document.getElementById('pwCurrent').value='';
+  document.getElementById('pwNew').value='';
+  document.getElementById('pwNewConfirm').value='';
+  document.getElementById('pwChangeMsg').textContent='';
+}
+
+function closePwChange(){
+  document.getElementById('pwChangeOverlay').classList.remove('active');
+}
+
+function doPwChange(){
+  var cur=document.getElementById('pwCurrent').value;
+  var nw=document.getElementById('pwNew').value;
+  var nwc=document.getElementById('pwNewConfirm').value;
+  var msgEl=document.getElementById('pwChangeMsg');
+  if(!cur||!nw||!nwc){msgEl.textContent='모든 항목을 입력하세요.';msgEl.style.color='#e53935';return;}
+  if(nw!==nwc){msgEl.textContent='새 비밀번호가 일치하지 않습니다.';msgEl.style.color='#e53935';return;}
+  if(nw.length<4){msgEl.textContent='새 비밀번호는 4자 이상이어야 합니다.';msgEl.style.color='#e53935';return;}
+  msgEl.textContent='확인 중...';
+  msgEl.style.color='#78909c';
+  db.collection('settings').doc('auth').get().then(function(doc){
+    if(!doc.exists){msgEl.textContent='인증 설정이 없습니다.';msgEl.style.color='#e53935';return;}
+    var data=doc.data();
+    if(cur!==data.password&&cur!==data.masterPassword){
+      msgEl.textContent='현재 비밀번호가 틀렸습니다.';
+      msgEl.style.color='#e53935';
+      return;
+    }
+    db.collection('settings').doc('auth').update({password:nw}).then(function(){
+      msgEl.textContent='비밀번호가 변경되었습니다!';
+      msgEl.style.color='#00b894';
+      setTimeout(function(){closePwChange();},1500);
+    }).catch(function(err){
+      msgEl.textContent='변경 오류: '+err.message;
+      msgEl.style.color='#e53935';
+    });
+  }).catch(function(err){
+    msgEl.textContent='연결 오류: '+err.message;
+    msgEl.style.color='#e53935';
+  });
+}
+
+// 세션 체크 - 이미 로그인했으면 바로 앱 표시
+if(sessionStorage.getItem('loggedIn')==='true'){
+  document.getElementById('loginOverlay').style.display='none';
+  document.getElementById('appWrap').style.display='block';
+}
+
+/* ===== 기존 앱 코드 ===== */
 var COMPANY_GROUPS=[
   {label:'법인계열',color:'#2c3e50',members:['(주)동아투어','(주)투어동아','(주)무지개여행사','(주)서아여행사 대구','(주)서아여행사 순천','(주)서아관광 광주','(주)서아투어 광주','(주)새동아투어 광주']},
   {label:'늘빛',color:'#e67e22',members:['늘빛 대구','늘빛 광주','늘빛 순천','늘빛 창원','늘빛 진주']},

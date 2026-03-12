@@ -202,6 +202,10 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .cb-save-done-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,184,148,.35);}
 .cb-save-done-btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,184,148,.2);}
 
+/* ★ 추가: 메인 테이블용 완료상태 저장 버튼 */
+.main-save-done-btn{padding:14px 36px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:16px;font-weight:700;box-shadow:0 4px 15px rgba(108,92,231,.25);transition:all .2s;}
+.main-save-done-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,92,231,.35);}
+
 @media(max-width:768px){
   body{padding:8px;}
   .container{padding:14px;border-radius:12px;}
@@ -235,7 +239,7 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
   .mulpum-bid-amount{padding:8px 6px;font-size:13px;}
   .mulpum-base-auto{padding:8px 6px;font-size:12px;}
   .action-bar{padding:14px;gap:8px;}
-  .btn-reset,.btn-cloud{padding:12px 20px;font-size:14px;flex:1;}
+  .btn-reset,.btn-cloud,.main-save-done-btn{padding:12px 20px;font-size:14px;flex:1;}
   .mulpum-manage-btn{padding:10px 14px;font-size:13px;}
   .cloud-btn{padding:10px 14px;font-size:13px;}
   .company-buttons{margin:15px 0;}
@@ -421,6 +425,8 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 <div class="action-bar">
 <button class="btn-reset" onclick="mulpumReset()">🔄 초기화</button>
 <button class="btn-cloud" onclick="cloudSave()">☁️ 클라우드 저장</button>
+<!-- ★ 추가: 메인 테이블 완료상태 저장 버튼 -->
+<button class="main-save-done-btn" onclick="saveMainDoneState()">💾 완료상태 저장</button>
 <span class="mulpum-save-status" id="mulpumSaveStatus"></span>
 </div>
 </div>
@@ -591,7 +597,6 @@ function loadCompaniesFromFirebase(){
   db.collection('companies').doc('list').get().then(function(doc){
     if(doc.exists&&doc.data().data){
       var fbData=doc.data().data;
-      /* ★ 수정: Firebase에서 불러올 때 가나다순 정렬 */
       fbData.sort(function(a,b){return a.name.localeCompare(b.name,'ko');});
       localStorage.setItem(CK,JSON.stringify(fbData));
       if(mulpumInited)mulpumRefreshSelects();
@@ -696,7 +701,6 @@ function buildMulpumTable(){
 
 function mulpumRefreshSelects(){
   var cs=gC();
-  /* ★ 셀렉트 옵션도 가나다순으로 표시 */
   cs.sort(function(a,b){return a.name.localeCompare(b.name,'ko');});
   for(var i=1;i<=TR;i++){
     var sel=document.getElementById('mulpumCompany'+i),cur=sel.value;
@@ -715,7 +719,6 @@ function mulpumOnCompanySelect(row){
     var bizno=prompt('사업자등록번호 입력 (선택):');
     var owner=prompt('대표자명 입력 (선택):');
     var cs=gC();cs.push({name:name,bizno:bizno||'',owner:owner||''});
-    /* ★ 수정: 직접입력 추가 시에도 가나다순 정렬 */
     cs.sort(function(a,b){return a.name.localeCompare(b.name,'ko');});
     sC(cs);
     mulpumRefreshSelects();sel.value=name;
@@ -890,7 +893,6 @@ function addCompany(){
   var cs=gC();
   if(cs.find(function(c){return c.name===n;})){alert('이미 등록된 상호입니다.');return;}
   cs.push({name:n,bizno:b,owner:o});
-  /* ★ 수정: 추가 후 가나다순 정렬 */
   cs.sort(function(a,b){return a.name.localeCompare(b.name,'ko');});
   sC(cs);
   document.getElementById('newCompanyName').value='';
@@ -902,7 +904,6 @@ function addCompany(){
 function renderCompanyList(){
   var cs=gC(),ct=document.getElementById('companyListContainer');
   if(!cs.length){ct.innerHTML='<div class="modal-empty">등록된 상호가 없습니다.</div>';return;}
-  /* ★ 수정: 렌더링 전 가나다순 정렬 */
   cs.sort(function(a,b){return a.name.localeCompare(b.name,'ko');});
   localStorage.setItem(CK,JSON.stringify(cs));
   var h='';
@@ -918,7 +919,6 @@ function editCompany(i){
   var b=prompt('사업자등록번호:',c.bizno);
   var o=prompt('대표자명:',c.owner||'');
   cs[i]={name:n,bizno:b||'',owner:o||''};
-  /* ★ 수정: 수정 후에도 가나다순 정렬 */
   cs.sort(function(a,b){return a.name.localeCompare(b.name,'ko');});
   sC(cs);
   renderCompanyList();mulpumRefreshSelects();showToast('✏️ 수정 완료!');
@@ -970,6 +970,81 @@ function cloudSave(){
       }).catch(function(err){alert('저장 오류: '+err.message);});
     }
   }).catch(function(err){alert('중복 확인 오류: '+err.message);});
+}
+
+/* ★★★ 추가: 메인 테이블에서 완료상태만 Firebase에 저장 (텔레그램 알림 없음) ★★★ */
+function saveMainDoneState(){
+  var ann=document.getElementById('mulpumAnnouncement').value.trim();
+  if(!ann){showToast('⚠️ 공고번호가 없습니다.');return;}
+
+  /* 현재 메인 테이블의 체크 상태 수집: {회사명: checked} */
+  var checkMap={};
+  for(var i=1;i<=TR;i++){
+    var comp=document.getElementById('mulpumCompany'+i).value;
+    if(!comp)continue;
+    checkMap[comp]=document.getElementById('mulpumCheck'+i).checked;
+  }
+
+  if(Object.keys(checkMap).length===0){showToast('⚠️ 저장할 상호가 없습니다.');return;}
+
+  /* 오늘 날짜의 같은 공고 문서 찾기 */
+  var now=new Date();
+  var dateStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  var annKey=getAnnKey(ann);
+
+  db.collection('bids').where('date','==',dateStr).get().then(function(snap){
+    var updatePromises=[];
+    var updatedCount=0;
+
+    snap.forEach(function(doc){
+      var d=doc.data();
+      if(getAnnKey(d.announcement||'')!==annKey)return;
+      if(!d.rows)return;
+
+      var changed=false;
+      d.rows.forEach(function(r){
+        if(checkMap.hasOwnProperty(r.company)){
+          if(r.checked!==checkMap[r.company]){
+            r.checked=checkMap[r.company];
+            changed=true;
+          }
+        }
+      });
+
+      if(changed){
+        updatePromises.push(db.collection('bids').doc(doc.id).update({rows:d.rows}));
+        updatedCount++;
+      }
+    });
+
+    if(updatePromises.length===0){
+      showToast('✅ 변경사항 없음 (이미 동기화됨)');
+      return;
+    }
+
+    Promise.all(updatePromises).then(function(){
+      showToast('💾 완료상태 저장됨! ('+updatedCount+'건 업데이트)');
+      /* allDayData도 동기화 (CB 보기에 즉시 반영되도록) */
+      allDayData.forEach(function(item){
+        if(getAnnKey(item.announcement||'')!==annKey)return;
+        if(!item.rows)return;
+        item.rows.forEach(function(r){
+          if(checkMap.hasOwnProperty(r.company)){
+            r.checked=checkMap[r.company];
+          }
+        });
+      });
+      /* CB 보기가 열려 있다면 새로고침 */
+      if(currentCBCompany){
+        var activeBtn=document.querySelector('.company-btn.active');
+        if(activeBtn)showCB(activeBtn,currentCBCompany);
+      }
+    }).catch(function(err){
+      alert('저장 오류: '+err.message);
+    });
+  }).catch(function(err){
+    alert('조회 오류: '+err.message);
+  });
 }
 
 var allDayData=[];
@@ -1154,7 +1229,7 @@ function showCB(btn,company){
       html+='<td>'+d.rate+'%</td>';
       html+='<td><span class="cb-bid-copy'+(isChecked?' done-locked':'')+'" onclick="event.stopPropagation();copyBidCell(this,\''+d.bid.replace(/'/g,"\\'")+'\')">' +d.bid+'</span></td>';
       html+='<td>'+d.time+'</td>';
-      html+='<td style="text-align:center;"><input type="checkbox" class="cb-done-checkbox" '+(isChecked?'checked':'')+' onchange="toggleCBDoneCheckbox(this,\''+rowId+'\')"></td>';
+      html+='<td style="text-align:center;"><input type="checkbox" class="cb-done-checkbox" data-docid="'+d._id+'" data-company="'+company.replace(/"/g,'&quot;')+'" '+(isChecked?'checked':'')+' onchange="toggleCBDoneCheckbox(this,\''+rowId+'\')"></td>';
       html+='</tr>';
     });
     html+='</tbody></table></div></div>';
@@ -1201,45 +1276,39 @@ function toggleCBDoneCheckbox(cb,rowId){
   }
 }
 
+/* ★★★ 수정: CB 완료상태 저장 – data-docid 기반으로 정확하게 매칭 ★★★ */
 function saveCBDoneState(){
   if(!currentCBCompany||!allDayData.length){showToast('저장할 데이터가 없습니다.');return;}
 
   var checkboxes=document.querySelectorAll('#cbResult .cb-done-checkbox');
-  var checkedAnns={};
+
+  /* docId별로 체크 상태를 모음 */
+  var docChecks={};
   checkboxes.forEach(function(cb){
-    var row=cb.closest('tr');
-    if(!row)return;
-    var annCell=row.querySelector('td');
-    if(!annCell)return;
-    var annText=annCell.textContent.trim();
-    checkedAnns[annText]=cb.checked;
+    var docId=cb.getAttribute('data-docid');
+    var company=cb.getAttribute('data-company');
+    if(!docId)return;
+    if(!docChecks[docId])docChecks[docId]=[];
+    docChecks[docId].push({company:company,checked:cb.checked});
   });
 
   var updatePromises=[];
   allDayData.forEach(function(item){
-    if(!item.rows)return;
+    if(!item.rows||!docChecks[item._id])return;
+    var checks=docChecks[item._id];
     var changed=false;
-    item.rows.forEach(function(r){
-      if(r.company!==currentCBCompany)return;
-      var sec=detectSector(item.announcement);
-      var matchKey='';
-      if(sec==='나라장터'){
-        matchKey=(item.announcement||'').split(/\s+/)[0]||'';
-      }else{
-        matchKey=extractTitle(item.announcement);
-      }
-      Object.keys(checkedAnns).forEach(function(annText){
-        if(annText.indexOf(matchKey)!==-1||matchKey.indexOf(annText)!==-1||annText===matchKey){
-          if(r.checked!==checkedAnns[annText]){
-            r.checked=checkedAnns[annText];
-            changed=true;
-          }
+
+    checks.forEach(function(chk){
+      item.rows.forEach(function(r){
+        if(r.company===chk.company&&r.checked!==chk.checked){
+          r.checked=chk.checked;
+          changed=true;
         }
       });
     });
+
     if(changed){
-      var docRef=db.collection('bids').doc(item._id);
-      updatePromises.push(docRef.update({rows:item.rows}));
+      updatePromises.push(db.collection('bids').doc(item._id).update({rows:item.rows}));
     }
   });
 
@@ -1250,9 +1319,40 @@ function saveCBDoneState(){
 
   Promise.all(updatePromises).then(function(){
     showToast('💾 완료상태 저장됨! ('+updatePromises.length+'건 업데이트)');
+    /* 메인 테이블에도 동기화: 현재 공고가 같으면 체크박스 반영 */
+    syncMainTableFromAllDayData();
   }).catch(function(err){
     alert('저장 오류: '+err.message);
   });
+}
+
+/* ★★★ 추가: allDayData → 메인 테이블 체크 동기화 ★★★ */
+function syncMainTableFromAllDayData(){
+  var ann=document.getElementById('mulpumAnnouncement').value.trim();
+  if(!ann||!allDayData.length)return;
+  var annKey=getAnnKey(ann);
+
+  /* 현재 공고와 일치하는 데이터에서 회사별 체크 상태 추출 */
+  var checkMap={};
+  allDayData.forEach(function(item){
+    if(getAnnKey(item.announcement||'')!==annKey)return;
+    if(!item.rows)return;
+    item.rows.forEach(function(r){
+      if(r.company)checkMap[r.company]=r.checked||false;
+    });
+  });
+
+  /* 메인 테이블에 반영 */
+  for(var i=1;i<=TR;i++){
+    var comp=document.getElementById('mulpumCompany'+i).value;
+    if(!comp||!checkMap.hasOwnProperty(comp))continue;
+    var chk=document.getElementById('mulpumCheck'+i);
+    if(chk.checked!==checkMap[comp]){
+      chk.checked=checkMap[comp];
+      mulpumToggleCheck(chk,i);
+    }
+  }
+  mulpumSave();
 }
 
 calculate();

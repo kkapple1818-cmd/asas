@@ -54,6 +54,8 @@ h1{font-size:24px;color:#1a237e;font-weight:bold;}
 .title-btn-reset:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(238,90,36,.3);}
 .title-btn-cloud{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;box-shadow:0 2px 8px rgba(0,184,148,.2);}
 .title-btn-cloud:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,184,148,.3);}
+.title-btn-done{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;box-shadow:0 2px 8px rgba(108,92,231,.2);}
+.title-btn-done:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(108,92,231,.3);}
 table{width:100%;border-collapse:collapse;margin-bottom:20px;}
 td,th{padding:12px 15px;border:1px solid #e0e0e0;}
 th{background:linear-gradient(135deg,#42a5f5,#1976D2);color:#fff;font-weight:bold;text-align:center;}
@@ -196,98 +198,95 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 .cb-save-done-btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,184,148,.2);}
 .main-save-done-btn{padding:14px 36px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:16px;font-weight:700;box-shadow:0 4px 15px rgba(108,92,231,.25);transition:all .2s;}
 .main-save-done-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,92,231,.35);}
-
-/* ★ 분리 입력칸 */
 .ann-split-wrap{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:6px;}
 .ann-split-wrap>div{flex:1;min-width:200px;}
 .ann-split-input{font-size:40px;font-weight:600;min-height:70px;padding:16px;width:100%;color:#1a237e;border:3px solid #90caf9;background:#fff;border-radius:12px;transition:.3s;}
 .ann-split-input:focus{border-color:#2196F3;box-shadow:0 0 0 4px rgba(33,150,243,.15);}
 .ann-split-input.item-input{border-color:#bbdefb;}
-
 @media(max-width:768px){
-  body{padding:8px;}
-  .container{padding:14px;border-radius:12px;}
-  .tabs{gap:6px;margin-bottom:12px;}
-  .tab-button{padding:12px 8px;font-size:14px;}
-  .header-section{flex-direction:column;gap:12px;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;}
-  h1{font-size:17px;}
-  .reset-button{padding:10px 18px;font-size:14px;width:100%;text-align:center;}
-  .header-section > div{width:100%;display:flex;gap:6px;}
-  .header-section > div > button,.header-section > div > .cloud-btn{flex:1;font-size:13px;padding:10px 8px;}
-  td,th{padding:8px 6px;font-size:12px;}
-  td:first-child{width:35%;}
-  input[type="number"],input[type="text"]{padding:6px;font-size:13px;}
-  select{padding:6px;font-size:13px;}
-  .section-title{font-size:14px;padding:10px 12px;margin:18px 0 10px 0;}
-  .section-title-row{padding:10px 12px;margin:18px 0 10px 0;flex-wrap:wrap;gap:8px;}
-  .section-title-row .title-text{font-size:14px;}
-  .section-title-row .title-buttons{gap:6px;}
-  .section-title-row .title-buttons button{padding:6px 12px;font-size:11px;}
-  .formula-section{padding:14px;font-size:11px;}
-  .final-cell{font-size:16px;}
-  .mulpum-announcement-label{font-size:22px;}
-  .ann-split-input{font-size:24px !important;min-height:50px !important;padding:10px !important;}
-  .mulpum-announcement-preview{font-size:16px;padding:10px 14px;gap:10px;}
-  .mulpum-font-control{padding:10px;gap:8px;}
-  .mulpum-font-control label{font-size:13px;}
-  .mulpum-font-control span{font-size:13px;min-width:45px;}
-  .mulpum-table{min-width:580px;}
-  .mulpum-table td input,.mulpum-table td select{padding:8px 4px;font-size:12px;}
-  .mulpum-bizno-cell{font-size:12px;padding:6px;}
-  .mulpum-bid-amount{padding:8px 6px;font-size:13px;}
-  .mulpum-base-auto{padding:8px 6px;font-size:12px;}
-  .action-bar{padding:14px;gap:8px;}
-  .btn-reset,.btn-cloud,.main-save-done-btn{padding:12px 20px;font-size:14px;flex:1;}
-  .mulpum-manage-btn{padding:10px 14px;font-size:13px;}
-  .cloud-btn{padding:10px 14px;font-size:13px;}
-  .company-buttons{margin:15px 0;}
-  .cb-group{margin-bottom:12px;}
-  .cb-group-label{font-size:13px;padding:4px 10px;}
-  .cb-group-btns{gap:4px;}
-  .company-btn{padding:6px 10px;font-size:11px;border-radius:6px;}
-  .badge{min-width:16px;height:16px;line-height:16px;font-size:9px;top:-6px;right:-6px;}
-  .cb-result{padding:10px;font-size:12px;}
-  .cb-result th{padding:8px 4px;font-size:11px;}
-  .cb-result td{padding:8px 4px;font-size:11px;}
-  .cb-result h3{font-size:15px;}
-  .sector-label{font-size:12px;padding:4px 10px;}
-  .modal-content,.load-modal-content{padding:16px;width:95%;max-height:85vh;border-radius:12px;}
-  .modal-header h2{font-size:17px;}
-  .modal-add-section{gap:6px;}
-  .modal-add-section input{padding:8px;font-size:13px;min-width:80px;}
-  .modal-add-btn{padding:8px 14px;font-size:13px;}
-  .modal-list-header{font-size:12px;}
-  .modal-list-header span{padding:8px 4px;}
-  .modal-list-item span{padding:8px 4px;font-size:12px;}
-  .modal-list-item .modal-btn-group{width:100px;padding:4px 6px;}
-  .modal-list-item .modal-btn-group button{padding:5px;font-size:11px;}
-  .load-date-input{padding:8px;font-size:14px;width:100%;}
-  .load-search-btn,.load-complete-btn{padding:8px 14px;font-size:13px;}
-  .load-list-item{padding:10px;flex-wrap:wrap;gap:8px;}
-  .load-ann{font-size:13px;}
-  .load-time{font-size:11px;}
-  .load-select-btn,.load-delete-btn{padding:6px 12px;font-size:12px;}
-  .readonly-banner{font-size:13px;padding:10px;}
-  .exit-readonly-btn{font-size:12px;padding:6px 14px;}
-  .copy-toast{top:auto;bottom:20px;right:10px;left:10px;text-align:center;font-size:14px;padding:12px 16px;border-radius:10px;}
-  .cb-save-done-btn{padding:12px 30px;font-size:14px;}
-  .login-box{padding:24px;width:92%;}
-  .login-box h2{font-size:18px;}
-  .login-input{padding:12px 14px;font-size:15px;}
-  .login-btn{padding:12px;font-size:15px;}
+body{padding:8px;}
+.container{padding:14px;border-radius:12px;}
+.tabs{gap:6px;margin-bottom:12px;}
+.tab-button{padding:12px 8px;font-size:14px;}
+.header-section{flex-direction:column;gap:12px;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;}
+h1{font-size:17px;}
+.reset-button{padding:10px 18px;font-size:14px;width:100%;text-align:center;}
+.header-section > div{width:100%;display:flex;gap:6px;}
+.header-section > div > button,.header-section > div > .cloud-btn{flex:1;font-size:13px;padding:10px 8px;}
+td,th{padding:8px 6px;font-size:12px;}
+td:first-child{width:35%;}
+input[type="number"],input[type="text"]{padding:6px;font-size:13px;}
+select{padding:6px;font-size:13px;}
+.section-title{font-size:14px;padding:10px 12px;margin:18px 0 10px 0;}
+.section-title-row{padding:10px 12px;margin:18px 0 10px 0;flex-wrap:wrap;gap:8px;}
+.section-title-row .title-text{font-size:14px;}
+.section-title-row .title-buttons{gap:6px;}
+.section-title-row .title-buttons button{padding:6px 12px;font-size:11px;}
+.formula-section{padding:14px;font-size:11px;}
+.final-cell{font-size:16px;}
+.mulpum-announcement-label{font-size:22px;}
+.ann-split-input{font-size:24px !important;min-height:50px !important;padding:10px !important;}
+.mulpum-announcement-preview{font-size:16px;padding:10px 14px;gap:10px;}
+.mulpum-font-control{padding:10px;gap:8px;}
+.mulpum-font-control label{font-size:13px;}
+.mulpum-font-control span{font-size:13px;min-width:45px;}
+.mulpum-table{min-width:580px;}
+.mulpum-table td input,.mulpum-table td select{padding:8px 4px;font-size:12px;}
+.mulpum-bizno-cell{font-size:12px;padding:6px;}
+.mulpum-bid-amount{padding:8px 6px;font-size:13px;}
+.mulpum-base-auto{padding:8px 6px;font-size:12px;}
+.action-bar{padding:14px;gap:8px;}
+.btn-reset,.btn-cloud,.main-save-done-btn{padding:12px 20px;font-size:14px;flex:1;}
+.mulpum-manage-btn{padding:10px 14px;font-size:13px;}
+.cloud-btn{padding:10px 14px;font-size:13px;}
+.company-buttons{margin:15px 0;}
+.cb-group{margin-bottom:12px;}
+.cb-group-label{font-size:13px;padding:4px 10px;}
+.cb-group-btns{gap:4px;}
+.company-btn{padding:6px 10px;font-size:11px;border-radius:6px;}
+.badge{min-width:16px;height:16px;line-height:16px;font-size:9px;top:-6px;right:-6px;}
+.cb-result{padding:10px;font-size:12px;}
+.cb-result th{padding:8px 4px;font-size:11px;}
+.cb-result td{padding:8px 4px;font-size:11px;}
+.cb-result h3{font-size:15px;}
+.sector-label{font-size:12px;padding:4px 10px;}
+.modal-content,.load-modal-content{padding:16px;width:95%;max-height:85vh;border-radius:12px;}
+.modal-header h2{font-size:17px;}
+.modal-add-section{gap:6px;}
+.modal-add-section input{padding:8px;font-size:13px;min-width:80px;}
+.modal-add-btn{padding:8px 14px;font-size:13px;}
+.modal-list-header{font-size:12px;}
+.modal-list-header span{padding:8px 4px;}
+.modal-list-item span{padding:8px 4px;font-size:12px;}
+.modal-list-item .modal-btn-group{width:100px;padding:4px 6px;}
+.modal-list-item .modal-btn-group button{padding:5px;font-size:11px;}
+.load-date-input{padding:8px;font-size:14px;width:100%;}
+.load-search-btn,.load-complete-btn{padding:8px 14px;font-size:13px;}
+.load-list-item{padding:10px;flex-wrap:wrap;gap:8px;}
+.load-ann{font-size:13px;}
+.load-time{font-size:11px;}
+.load-select-btn,.load-delete-btn{padding:6px 12px;font-size:12px;}
+.readonly-banner{font-size:13px;padding:10px;}
+.exit-readonly-btn{font-size:12px;padding:6px 14px;}
+.copy-toast{top:auto;bottom:20px;right:10px;left:10px;text-align:center;font-size:14px;padding:12px 16px;border-radius:10px;}
+.cb-save-done-btn{padding:12px 30px;font-size:14px;}
+.login-box{padding:24px;width:92%;}
+.login-box h2{font-size:18px;}
+.login-input{padding:12px 14px;font-size:15px;}
+.login-btn{padding:12px;font-size:15px;}
 }
 @media(max-width:380px){
-  body{padding:4px;}
-  .container{padding:10px;}
-  h1{font-size:15px;}
-  .tab-button{padding:10px 6px;font-size:13px;}
-  .ann-split-input{font-size:20px !important;min-height:44px !important;padding:8px !important;}
-  .mulpum-announcement-preview{font-size:14px;}
-  .company-btn{padding:5px 7px;font-size:10px;}
-  .cb-result th{font-size:10px;padding:6px 2px;}
-  .cb-result td{font-size:10px;padding:6px 2px;}
-  .modal-content,.load-modal-content{padding:12px;width:98%;}
-  .login-box{padding:20px;}
+body{padding:4px;}
+.container{padding:10px;}
+h1{font-size:15px;}
+.tab-button{padding:10px 6px;font-size:13px;}
+.ann-split-input{font-size:20px !important;min-height:44px !important;padding:8px !important;}
+.mulpum-announcement-preview{font-size:14px;}
+.company-btn{padding:5px 7px;font-size:10px;}
+.cb-result th{font-size:10px;padding:6px 2px;}
+.cb-result td{font-size:10px;padding:6px 2px;}
+.modal-content,.load-modal-content{padding:12px;width:98%;}
+.login-box{padding:20px;}
 }
 </style>
 </head>
@@ -392,7 +391,6 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 <div id="companyButtonsArea" class="company-buttons"></div>
 <div id="cbResult" class="cb-result" style="display:none;"></div>
 
-<!-- ★ 공고번호 + 품명 분리 입력 -->
 <div class="ann-split-wrap">
   <div>
     <div class="mulpum-announcement-label">공고번호:</div>
@@ -400,7 +398,7 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
   </div>
   <div>
     <div class="mulpum-announcement-label">품명:</div>
-    <input type="text" id="mulpumAnnItem" class="ann-split-input item-input" value="" placeholder="대구여고" oninput="mulpumCombineAnn();mulpumSave();">
+    <input type="text" id="mulpumAnnItem" class="ann-split-input item-input" value="" placeholder="5310230601 5310231201" oninput="mulpumCombineAnn();mulpumSave();">
   </div>
 </div>
 <input type="hidden" id="mulpumAnnouncement" value="">
@@ -408,11 +406,13 @@ select:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,
 
 <div class="mulpum-font-control"><label>글자크기 조정:</label><input type="range" id="mulpumFontSlider" min="20" max="60" value="40" oninput="mulpumAdjustFont(this.value)"><span id="mulpumFontDisplay">40px</span></div>
 
+<!-- ★ 기초금액확인 바: 완료저장 버튼 추가 -->
 <div class="section-title-row">
 <span class="title-text">기초금액확인</span>
 <div class="title-buttons">
 <button class="title-btn-reset" onclick="mulpumReset()">🔄 초기화</button>
 <button class="title-btn-cloud" onclick="cloudSave()">☁️ 클라우드 저장</button>
+<button class="title-btn-done" onclick="saveMainDoneState()">💾 완료저장</button>
 </div>
 </div>
 
@@ -540,7 +540,6 @@ function mulpumToggleCheck(cb,row){var tr=cb.closest('tr');if(cb.checked)tr.clas
 function showToast(msg){var t=document.getElementById('copyToast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},2000);}
 function mulpumAutoUpper(el){var pos=el.selectionStart,v=el.value,u=v.toUpperCase();if(v!==u){el.value=u;el.setSelectionRange(pos,pos);}}
 
-/* ★ 공고번호+품명 결합 */
 function mulpumCombineAnn(){
   var num=document.getElementById('mulpumAnnNum').value.trim();
   var item=document.getElementById('mulpumAnnItem').value.trim();
@@ -552,6 +551,7 @@ function mulpumCombineAnn(){
   mulpumUpdatePreview();
 }
 
+/* ★ 품번 개별 복사: 스페이스로 구분된 품번을 각각 따로 표시 */
 function mulpumUpdatePreview(){
   var v=document.getElementById('mulpumAnnouncement').value.trim();
   var pre=document.getElementById('announcementPreview');
@@ -570,7 +570,12 @@ function mulpumUpdatePreview(){
       }
     }
     if(item){
-      html+='<span class="preview-part preview-product" onclick="copyPart(this,\''+item.replace(/'/g,"\\'")+'\')" title="품목번호 복사">📦 '+item+'</span>';
+      var itemTokens=item.split(/\s+/);
+      itemTokens.forEach(function(tk){
+        if(!tk)return;
+        var eTk=tk.replace(/'/g,"\\'");
+        html+='<span class="preview-part preview-product" onclick="copyPart(this,\''+eTk+'\')" title="품번 복사: '+tk+'">📦 '+tk+'</span>';
+      });
     }
     pre.innerHTML=html;
   }else{
@@ -649,7 +654,6 @@ function cloudSave(){
   }).catch(function(err){alert('중복 확인 오류: '+err.message);});
 }
 
-/* ★ 메인 테이블 완료상태 저장 (텔레그램 알림 없음) */
 function saveMainDoneState(){
   var ann=document.getElementById('mulpumAnnouncement').value.trim();
   if(!ann){showToast('⚠️ 공고번호가 없습니다.');return;}
@@ -737,7 +741,15 @@ function showCB(btn,company){
           if(/^R\d{2}BK013/i.test(numPart.toUpperCase())){var fp=numPart.substring(0,8),rest=numPart.substring(8),ch5=rest.substring(0,5),after=rest.substring(5);annDisplay+='<span class="cb-ann-part'+(isChecked?' done-locked':'')+'" onclick="event.stopPropagation();copyCBPart(this,\''+eTk+'\')" title="공고번호 복사: '+numPart+'"><span style="color:#9e9e9e;">'+fp+'</span><span style="color:#e53935;font-weight:700;">'+ch5+'</span>'+after+'</span>';}
           else{annDisplay+='<span class="cb-ann-part'+(isChecked?' done-locked':'')+'" onclick="event.stopPropagation();copyCBPart(this,\''+eTk+'\')" title="공고번호 복사: '+numPart+'">'+numPart+'</span>';}
         }
-        if(itemPart){var eIt=itemPart.replace(/'/g,"\\'");annDisplay+='&nbsp;&nbsp;<span class="cb-ann-part'+(isChecked?' done-locked':'')+'" onclick="event.stopPropagation();copyCBPart(this,\''+eIt+'\')" title="품번 복사: '+itemPart+'" style="color:#1565c0;font-weight:700;">'+itemPart+'</span>';}
+        /* ★ CB뷰 품번 개별 복사 */
+        if(itemPart){
+          var itemTokens2=itemPart.split(/\s+/);
+          itemTokens2.forEach(function(tk2){
+            if(!tk2)return;
+            var eTk2=tk2.replace(/'/g,"\\'");
+            annDisplay+='&nbsp;<span class="cb-ann-part'+(isChecked?' done-locked':'')+'" onclick="event.stopPropagation();copyCBPart(this,\''+eTk2+'\')" title="품번 복사: '+tk2+'" style="color:#1565c0;font-weight:700;">'+tk2+'</span>';
+          });
+        }
       }else{
         var title=extractTitle(d.announcement);var eTitle=title.replace(/'/g,"\\'");
         annDisplay+='<span class="cb-ann-part'+(isChecked?' done-locked':'')+'" onclick="event.stopPropagation();copyCBPart(this,\''+eTitle+'\')" title="공고명 복사: '+title+'">'+title+'</span>';
